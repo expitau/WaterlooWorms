@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  # frontend:
+  #   image: nginx
+  #   volumes: 
+  #     - ./frontend:/usr/share/nginx/html
+  #   ports:
+  #     - 80:80
+  backend:
+    image: node:alpine
+    working_dir: /app
+    command: node server.js
+    volumes:
+      - ./backend:/app
+    ports:
+      - 3000:3000

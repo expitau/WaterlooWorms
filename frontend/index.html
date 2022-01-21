@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaterlooWorks Sucks</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="bg-slate-900 w-screen h-screen text-slate-100 p-4 overflow-x-hidden overflow-y-auto">
+        <div id="app">
+            <!-- Title -->
+            <div class="flex flex-row">
+                <div class="text-xl flex-grow">WaterlooWorks <span class="text-blue-400 font-bold">Sucks</span></div>
+
+                <div v-if="status == STATUS.READY"
+                    class="flex-none text-slate-900 p-1 pl-2 rounded-lg w-96 mr-4 bg-white flex flex-row">
+                    <input type="text" v-model="search" placeholder="Search..." class="flex-grow outline-0"
+                        @change="UpdateURLSearch">
+                    <button class="flex-none h-5 w-5 text-slate-700 hover:text-slate-500 m-auto mr-1"
+                        v-if="search != ''" @click="search = '';UpdateURLSearch()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <hr class="border-slate-500 mt-1">
+
+            <div v-if="status == STATUS.AUTHENTICATING || status == STATUS.AUTH_FAILED" class="flex flex-col">
+                <div class="mt-32"></div>
+                <div v-if="status == STATUS.AUTH_FAILED" class="mx-auto my-1 text-red-500">Login failed</div>
+                <div v-else class="mx-auto my-1 ">Authentication Required</div>
+                <input id="passwordinput" type="password" v-model="password"
+                    class="text-slate-900 p-1 pl-2 rounded-lg w-96 mx-auto" v-on:keyup.enter="submitPassword"></input>
+            </div>
+
+            <!-- Loading screen -->
+            <div v-else-if="status == STATUS.LOADING" class="text-center text-lg mt-32">Loading...</div>
+
+            <!-- Main page -->
+            <div id="body" class="p-4 flex flex-col" v-else>
+                <div class="flex flex-row justify-center">
+                    <!-- Settings button -->
+                    <button
+                        class="ext-lg m-4 mb-0 bg-blue-600 p-2 rounded-md drop-shadow-md text-base hover:bg-blue-500"
+                        @click="settingsOpen = true">Settings</button>
+
+                    <!-- Export button -->
+                    <button
+                        class="text-lg m-4 mb-0 bg-gray-600 p-2 rounded-md drop-shadow-md text-base hover:bg-gray-500"
+                        @click="exportOpen = true">Export shortlist</button>
+                </div>
+                <div class="m-2 mt-0">Found {{filteredPostings.length}} jobs</div>
+                <!-- Settings modal -->
+                <div v-if="settingsOpen">
+                    <div class="fixed top-0 left-0 w-full h-full z-20"
+                        style="background-color: rgba(15, 23, 42, 0.678);">
+                    </div>
+                    <div
+                        class="fixed px-8 w-fit z-30 top-4 bottom-4 mx-auto left-0 right-0 bg-slate-800 rounded-lg overflow-y-auto">
+                        <button class="absolute right-0 p-4" @click="settingsOpen = false"><svg
+                                xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg></button>
+                        <div class="text-xl text-center py-4">Settings</div>
+                        <!-- List of settings -->
+                        <div class="flex flex-col">
+                            <div class="mx-auto">
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.NoExternal" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">No External</span>
+                                        <div class="text-slate-400">Exclude job postings that require an external
+                                            application</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.NoCoverLetters" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">No Cover Letters</span>
+                                        <div class="text-slate-400">Exclude job postings that require a cover letter
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.FourMonthOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">4 Month Only</span>
+                                        <div class="text-slate-400">Exclude job postings that are not 4-month positions
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.CSOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">CS & Math Only</span>
+                                        <div class="text-slate-400">Exclude job postings that are not computer science
+                                            or
+                                            math related</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.NoSenior" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">No Senior Positions</span>
+                                        <div class="text-slate-400">Exclude job postings that are only for senior
+                                            students
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.RemoteOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">Remote Only</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are not remote.</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.InPersonOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings()"></input>
+                                    <div>
+                                        <span class="text-slate-100">In-person Only</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are remote</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.ShortlistOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings();settings.NoShortlist = false;"></input>
+                                    <div>
+                                        <span class="text-slate-100">Shortlist Only Mode</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are not shortlisted</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.NoShortlist" class="h-4 w-4 m-4"
+                                        @change="saveSettings();settings.ShortlistOnly = false;"></input>
+                                    <div>
+                                        <span class="text-slate-100">Exclude Shortlist</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are shortlisted</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.BlacklistOnly" class="h-4 w-4 m-4"
+                                        @change="saveSettings();settings.NoBlacklist = false;"></input>
+                                    <div>
+                                        <span class="text-slate-100">Blacklist Only Mode</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are not blacklisted</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.NoBlacklist" class="h-4 w-4 m-4"
+                                        @change="saveSettings();settings.BlacklistOnly = false;"></input>
+                                    <div>
+                                        <span class="text-slate-100">Exclude Blacklist</span>
+                                        <div class="text-slate-400">Exclude jobs postings that are blacklisted</div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row m-2">
+                                    <input type="checkbox" v-model="settings.ApplyToSearch" class="h-4 w-4 m-4"
+                                        @change="saveSettings();"></input>
+                                    <div>
+                                        <span class="text-slate-100">Apply To Search Results</span>
+                                        <div class="text-slate-400">Apply filters to search results</div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="ml-12 text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
+                                    @click="resetSettings()">Reset Defaults</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="exportOpen">
+                    <div class="fixed top-0 left-0 w-full h-full z-20"
+                        style="background-color: rgba(15, 23, 42, 0.678);">
+                    </div>
+                    <div
+                        class="fixed px-8 w-fit z-30 my-auto h-2/3 mx-auto left-0 right-0 bg-slate-800 rounded-lg overflow-y-auto">
+                        <button class="absolute right-0 p-4" @click="exportOpen = false"><svg
+                                xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg></button>
+                        <div class="text-xl text-center py-4">Export</div>
+                        <!-- List of settings -->
+                        <div class="mx-auto p-6 bg-slate-900 rounded-md h-2/3" style="font-family: monospace;">
+                            <div class="w-72 h-full whitespace-pre-wrap overflow-y-auto">{{Exported}}</div>
+                        </div>
+
+                        <div class="flex flex-row justify-center">
+                            <button class="text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
+                                @click="shortlist = []; saveLists()">Clear Shortlist</button>
+                            <button class="text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
+                                @click="blacklist = []; saveLists()">Clear Blacklist</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-4">
+                    <div class="bg-slate-800 w-full drop-shadow-md rounded-md p-6 flex flex-row space-x-12"
+                        v-for="job of filteredPostings.slice(0,30)" v-bind:id="job.Id">
+                        <div class="flex-none w-1/3 overflow-x-wrap">
+                            <div class="flex flex-row">
+                                <div class="text-2xl text-slate-100 w-5/6">{{job.Title}}
+                                </div>
+                                <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" v-if="shortlist.includes(job.Id)">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" v-if="blacklist.includes(job.Id)">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+
+                            <div class="text-lg text-slate-200">{{job.Id}} - {{job.Company}} - {{job.Location}}
+                            </div>
+                            <div class="flex flex-row space-x-2">
+                                <div v-if="job.Special.includes('Remote')"
+                                    class="bg-gray-600 rounded-xl w-fit px-2 text-sm">
+                                    In person
+                                </div>
+                                <div v-else class="bg-blue-600 rounded-xl w-fit px-2 text-sm">
+                                    Remote
+                                </div>
+                                <div v-if="job.Documents.includes('Cover Letter')"
+                                    class="bg-red-600 rounded-xl w-fit px-2 text-sm">
+                                    Cover letter
+                                </div>
+                                <div v-if="job.Duration.includes('4-month')"
+                                    class="bg-gray-600 rounded-xl w-fit px-2 text-sm">
+                                    4-month
+                                </div>
+                                <div v-else-if="job.Duration.includes('8-month preferred')"
+                                    class="bg-red-600 rounded-xl w-fit px-2 text-sm">
+                                    8-month preferred
+                                </div>
+                                <div v-else-if="job.Duration.includes('8-month')"
+                                    class="bg-red-600 rounded-xl w-fit px-2 text-sm">
+                                    8-month
+                                </div>
+                                <div v-else-if="job.Duration.includes('2-term')"
+                                    class="bg-orange-600 rounded-xl w-fit px-2 text-sm">
+                                    Dual-term
+                                </div>
+                                <div v-if="job.Special.includes('External')"
+                                    class="bg-red-600 rounded-xl w-fit px-2 text-sm">
+                                    External Application
+                                </div>
+                            </div>
+                            <button
+                                class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                                @click="shortlist.push(job.Id);saveLists()"
+                                v-if="!shortlist.includes(job.Id)">Shortlist</button>
+                            <button
+                                class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                                @click="shortlist.splice(shortlist.indexOf(job.Id),1);saveLists()"
+                                v-else>Unshortlist</button>
+                            <button
+                                class="mx-auto text-md m-3 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
+                                @click="blacklist.push(job.Id);saveLists()"
+                                v-if="!blacklist.includes(job.Id)">Blacklist</button>
+                            <button
+                                class="mx-auto text-md m-3 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
+                                @click="blacklist.splice(blacklist.indexOf(job.Id),1);saveLists()"
+                                v-else>Unblacklist</button>
+                            <div class="mt-5" v-if="job.Skills.length > 0">
+                                <div class="font-bold">Tech</div>
+                                <hr class="w-24 mt-1">
+                                <div class="flex flex-row flex-wrap">
+                                    <div v-for="tech of job.Skills" class="mr-2">{{tech}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-auto">
+                            <div>
+                                <div class="font-bold">Summary</div>
+                                <div class="whitespace-pre-line">
+                                    {{job.Summary}}
+                                </div>
+                            </div>
+                            <br>
+                            <div>
+                                <div class="font-bold">Responsibilities</div>
+                                <div class="whitespace-pre-line">
+                                    {{job.Responsibilities}}
+                                </div>
+                            </div>
+                            <br>
+                            <div>
+                                <div class="font-bold">Required Skills</div>
+                                <div class="whitespace-pre-line">
+                                    {{job.ReqSkills}}
+                                </div>
+                            </div>
+                            <br>
+                            <div>
+                                <div v-if="job.Compensation" class="font-bold">Compensation & Benefits</div>
+                                <div class="whitespace-pre-line">
+                                    {{job.Compensation}}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./functions/status.js"></script>
+<script src="./functions/jobposting.js"></script>
+<script src="./functions/fetch.js"></script>
+<script src="./functions/tech.js"></script>
+<script src="vue.js"></script>
+
+</html>
