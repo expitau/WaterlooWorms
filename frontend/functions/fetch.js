@@ -1,5 +1,4 @@
-// Comment out the next line to use local data
-// ENDPOINT = new URL('http://localhost:3000/')
+
 
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING

@@ -12,6 +12,68 @@ var app = new Vue({
     blacklist: JSON.parse(localStorage.getItem("blacklist")) ?? [],
     search: new URLSearchParams(window.location.search).has('s') ? new URLSearchParams(window.location.search).get('s') : "",
     STATUS: STATUS,
+    settingsDesc: [
+      {
+        "model": "NoExternal",
+        "title": "No External",
+        "desc": "Exclude job postings that require an external application"
+      },
+      {
+        "model": "NoCoverLetters",
+        "title": "No Cover Letters",
+        "desc": "Exclude job postings that require a cover letter"
+      },
+      {
+        "model": "FourMonthOnly",
+        "title": "4 Month Only",
+        "desc": "Exclude job postings that are not 4-month positions"
+      },
+      {
+        "model": "CSOnly",
+        "title": "CS & Math Only",
+        "desc": "Exclude job postings that are not computer science or math related"
+      },
+      {
+        "model": "NoSenior",
+        "title": "No Senior Positions",
+        "desc": "Exclude job postings that are only for senior students"
+      },
+      {
+        "model": "RemoteOnly",
+        "title": "Remote Only",
+        "desc": "Exclude jobs postings that are not remote."
+      },
+      {
+        "model": "InPersonOnly",
+        "title": "In-person Only",
+        "desc": "Exclude jobs postings that are remote"
+      },
+      {
+        "model": "ShortlistOnly",
+        "title": "Shortlist Only Mode",
+        "desc": "Exclude jobs postings that are not shortlisted"
+      },
+      {
+        "model": "NoShortlist",
+        "title": "Exclude Shortlist",
+        "desc": "Exclude jobs postings that are shortlisted"
+      },
+      {
+        "model": "BlacklistOnly",
+        "title": "Blacklist Only Mode",
+        "desc": "Exclude jobs postings that are not blacklisted"
+      },
+      {
+        "model": "NoBlacklist",
+        "title": "Exclude Blacklist",
+        "desc": "Exclude jobs postings that are blacklisted"
+      },
+      {
+        "model": "ApplyToSearch",
+        "title": "Apply To Search Results",
+        "desc": "Apply filters to search results"
+      },
+    ]
   },
   computed: {
     filteredPostings: function () {
@@ -62,17 +124,17 @@ var app = new Vue({
   }
 })
 
-
+// Comment out the next line to use local data
+// ENDPOINT = new URL('http://localhost:3000/')
 typeof ENDPOINT === 'undefined' && fetchJSON()
 
 !app.settings && app.resetSettings()
 localStorage.setItem("settings", JSON.stringify(app.settings))
 
-
+// Returns postings that match the set filters
 function getCleaned(postings) {
 
-  let conditions = []
-
+  // Filters title to only match software and math jobs
   function filterTitle(title) {
     excludes = ["ios"]
     matches = ["software", "develop", "ui\\b", "\\bux\\b", "full.?stack", "back.?end", "front.?end", "programmer", "data", "machine", "linux", "\\bit\\b", "network", "qa\\b", "tutor", "game"]
@@ -90,33 +152,48 @@ function getCleaned(postings) {
     return false
   }
 
-  function addCondition(cond, desc) {
-    conditions.push({
-      cond: cond,
-      desc: desc
-    })
-  }
-  app.settings.NoExternal && addCondition(x => !x.Special.includes("External"), "required an external application")
-  app.settings.NoCoverLetters && addCondition(x => !x.Documents.includes("Cover Letter"), "did not require a cover letter")
-  app.settings.FourMonthOnly && addCondition(x => x.Duration.includes("4-month"), "were not 4-month positions")
-  app.settings.CSOnly && addCondition(x => filterTitle(x.Title), "were not computer science or math related")
-  app.settings.NoSenior && addCondition(x => !x.Level[0].includes("Senior"), "were senior only")
-  app.settings.InPersonOnly && addCondition(x => !x.Special.includes("Remote"), "were remote jobs")
-  app.settings.RemoteOnly && addCondition(x => x.Special.includes("Remote"), "were not remote jobs")
-  app.settings.ShortlistOnly && addCondition(x => app.shortlist.includes(x.Id), "were not shortlisted")
-  app.settings.NoShortlist && addCondition(x => !app.shortlist.includes(x.Id), "were shortlisted")
-  app.settings.BlacklistOnly && addCondition(x => app.blacklist.includes(x.Id), "were shortlisted")
-  app.settings.NoBlacklist && addCondition(x => !app.blacklist.includes(x.Id), "were shortlisted")
+  // Apply filters
+  [
+    [app.settings.NoExternal,
+    x => !x.Special.includes("External")],
 
-  arr = postings;
-  for (const [id, condition] of Object.entries(conditions)) {
-    arr = arr.filter(x => { return condition.cond(x) })
-  }
+    [app.settings.NoCoverLetters,
+    x => !x.Documents.includes("Cover Letter")],
 
-  return arr
+    [app.settings.FourMonthOnly,
+    x => x.Duration.includes("4-month")],
+
+    [app.settings.CSOnly,
+    x => filterTitle(x.Title)],
+
+    [app.settings.NoSenior,
+    x => !x.Level[0].includes("Senior")],
+
+    [app.settings.InPersonOnly,
+    x => !x.Special.includes("Remote")],
+
+    [app.settings.RemoteOnly,
+    x => x.Special.includes("Remote")],
+
+    [app.settings.ShortlistOnly,
+    x => app.shortlist.includes(x.Id)],
+
+    [app.settings.NoShortlist,
+    x => !app.shortlist.includes(x.Id)],
+
+    [app.settings.BlacklistOnly,
+    x => app.blacklist.includes(x.Id)],
+
+    [app.settings.NoBlacklist,
+    x => !app.blacklist.includes(x.Id)],
+
+  ].forEach((x) => { x[0] && (() => { postings = postings.filter(x[1]) })() });
+
+  return postings
 }
 
+// Get postings that match search results
 function getSearch(postings, search) {
   search = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi")
-  return postings.filter(x => search.test(x.Id) || search.test(x.Title) || search.test(x.Company) || search.test(x.Location) || search.test(x.Summary) || search.test(x.Responsibilities) || search.test(x.ReqSkills) || search.test(x.Compensation))
+  return (app.settings.ApplyToSearch ? getCleaned(postings) : postings).filter(x => search.test(x.Id) || search.test(x.Title) || search.test(x.Company) || search.test(x.Location) || search.test(x.Summary) || search.test(x.Responsibilities) || search.test(x.ReqSkills) || search.test(x.Compensation))
 }
