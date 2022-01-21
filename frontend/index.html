@@ -60,7 +60,7 @@
                         class="text-lg m-4 mb-0 bg-gray-600 p-2 rounded-md drop-shadow-md text-base hover:bg-gray-500"
                         @click="exportOpen = true">Export shortlist</button>
                 </div>
-                <div class="m-2 mt-0">Found {{filteredPostings.length}} jobs</div>
+                <div class="m-2 mt-0">Found {{filteredPostings.length}} of {{postings.length}} jobs</div>
                 <!-- Settings modal -->
                 <div v-if="settingsOpen">
                     <div class="fixed top-0 left-0 w-full h-full z-20"
