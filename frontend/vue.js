@@ -1,6 +1,7 @@
 var app = new Vue({
   el: '#app',
   data: {
+    page: 0,
     postings: [],
     password: "",
     passwordVisible: false,
