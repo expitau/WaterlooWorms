@@ -89,6 +89,14 @@ var app = new Vue({
     }
   },
   methods: {
+    makeVisible: (id,type) => {
+      document.getElementById(`${type}-readmore-${id}`).classList.remove("truncate")
+      document.getElementById(`${type}-readmore-${id}`).classList.remove("max-h-48")
+      document.getElementById(`${type}-readmorebtn-${id}`).classList.add("hidden")
+    },
+    getHeight: (id,type) => {
+      return document.getElementById(`${type}-readmore-${id}`).offsetHeight
+    },
     UpdateURLSearch: () => {
       let queryParams = new URLSearchParams(window.location.search);
       queryParams.set("s", app.search);
