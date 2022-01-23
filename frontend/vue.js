@@ -7,11 +7,18 @@ var app = new Vue({
     passwordVisible: false,
     exportOpen: false,
     status: STATUS.AUTHENTICATING,
-    settingsOpen: false,
+    settingsOpen: true,
     settings: JSON.parse(localStorage.getItem("settings")),
     shortlist: JSON.parse(localStorage.getItem("shortlist")) ?? [],
     blacklist: JSON.parse(localStorage.getItem("blacklist")) ?? [],
     search: new URLSearchParams(window.location.search).has('s') ? new URLSearchParams(window.location.search).get('s') : "",
+    themeAndDegreesOpen: false,
+    themeOpen: false,
+    degreeOpen: false,
+    themesAndDegrees: {
+      "themes": [],
+      "degrees": [],
+    },
     STATUS: STATUS,
     settingsDesc: [
       {
@@ -28,11 +35,6 @@ var app = new Vue({
         "model": "FourMonthOnly",
         "title": "4 Month Only",
         "desc": "Exclude job postings that are not 4-month positions"
-      },
-      {
-        "model": "CSOnly",
-        "title": "CS & Math Only",
-        "desc": "Exclude job postings that are not computer science or math related"
       },
       {
         "model": "NoSenior",
@@ -111,10 +113,11 @@ var app = new Vue({
     },
     resetSettings: () => {
       app.settings = {
+        themes: {},
+        degrees: {},
         NoExternal: true,
         NoCoverLetters: true,
         FourMonthOnly: true,
-        CSOnly: false,
         NoSenior: false,
         RemoteOnly: false,
         InPersonOnly: false,
@@ -161,6 +164,35 @@ function getCleaned(postings) {
     return false
   }
 
+  function themesAndDegreesActive() {
+    for ([theme,val] of Object.entries(app.settings.themes)){
+      if (val){
+        return true
+      }
+    }
+    for ([degree,val] of Object.entries(app.settings.degrees)){
+      if (val){
+        return true
+      }
+    }
+    return false;
+  }
+
+  function matchesThemesAndDegrees(x) {
+    for (theme of x.TargetedClusters.themes){
+      console.log(theme)
+      if (app.settings.themes[theme]){
+        return true;
+      }
+    }
+    for (degree of x.TargetedClusters.degrees){
+      if (app.settings.degrees[degree]){
+        return true;
+      }
+    }
+    return false
+  }
+
   // Apply filters
   [
     [app.settings.NoExternal,
@@ -195,6 +227,9 @@ function getCleaned(postings) {
 
     [app.settings.NoBlacklist,
     x => !app.blacklist.includes(x.Id)],
+
+    [themesAndDegreesActive(),
+    x => matchesThemesAndDegrees(x)]
 
   ].forEach((x) => { x[0] && (() => { postings = postings.filter(x[1]) })() });
 

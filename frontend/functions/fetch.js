@@ -1,5 +1,3 @@
-
-
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING
     if (typeof ENDPOINT === 'undefined') {
@@ -11,10 +9,20 @@ function fetchJSON(password = "") {
                 for (const [key, value] of Object.entries(json)) {
                     app.postings.push(new JobPosting(key, value))
                 }
+                app.postings.forEach(x => {
+                    x.TargetedClusters.themes.forEach(y => {
+                        app.themesAndDegrees.themes.includes(y) || app.themesAndDegrees.themes.push(y)
+                    });
+                    x.TargetedClusters.degrees.forEach(y => {
+                        app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
+                    })
+                })
+                app.themesAndDegrees.themes.sort()
+                app.themesAndDegrees.degrees.sort()
                 app.status = STATUS.READY
             })
     } else {
-        ENDPOINT.searchParams.set('pwd',password);
+        ENDPOINT.searchParams.set('pwd', password);
         let xhr = new XMLHttpRequest();
         xhr.open("GET", ENDPOINT, true);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -24,6 +32,14 @@ function fetchJSON(password = "") {
                 for (const [key, value] of Object.entries(json)) {
                     app.postings.push(new JobPosting(key, value))
                 }
+                app.postings.forEach(x => {
+                    x.TargetedClusters.themes.forEach(y => {
+                        app.themesAndDegrees.themes.includes(y) || app.themesAndDegrees.themes.push(y)
+                    });
+                    x.TargetedClusters.degrees.forEach(y => {
+                        app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
+                    })
+                })
                 app.status = STATUS.READY
             }
             if (xhr.readyState === 4 && xhr.status === 401) {

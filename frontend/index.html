@@ -100,7 +100,72 @@
                         <!-- List of settings -->
                         <div class="flex flex-col">
                             <div class="mx-auto">
-                                <div v-for="setting in settingsDesc" class="flex flex-row m-2">
+                                <div class="flex flex-row ml-5">
+                                    <button @click="themeAndDegreesOpen = !themeAndDegreesOpen">
+                                        <svg v-if="!themeAndDegreesOpen" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div>
+                                        <div class="text-slate-100 ml-2">Theme & Degree Filters</div>
+                                    </div>
+                                </div>
+                                <div v-if="themeAndDegreesOpen" class="flex flex-col ml-6">
+                                    <div class="flex flex-row m-2 ml-5">
+                                        <button @click="themeOpen = !themeOpen">
+                                            <svg v-if="!themeOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div>
+                                            <div class="text-slate-100 ml-2">Themes</div>
+                                        </div>
+                                    </div>
+                                    <div v-if="themeOpen" v-for="theme in themesAndDegrees.themes" class="ml-8 flex flex-row" >
+                                        <input type="checkbox" v-model="settings.themes[theme]"
+                                            class="h-4 w-4 m-3 flex-none" @change="saveSettings();"></input>
+                                        <span class="text-slate-100 my-2">{{theme.substr(0,60) + (theme.length > 70 ? "..." : "")}}</span>
+                                        <!-- <div class="text-slate-400">{{setting.desc}}</div> -->
+                                    </div>
+                                    <div class="flex flex-row m-2 ml-5">
+                                        <button @click="degreeOpen = !degreeOpen">
+                                            <svg v-if="!degreeOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div>
+                                            <div class="text-slate-100 ml-2">Degrees</div>
+                                        </div>
+                                    </div>
+                                    <div v-if="degreeOpen" v-for="degree in themesAndDegrees.degrees" class="ml-8 flex flex-row" >
+                                        <input type="checkbox" v-model="settings.degrees[degree]"
+                                            class="h-4 w-4 m-3 flex-none" @change="saveSettings();"></input>
+                                        <span class="text-slate-100 my-2">{{degree.substr(0,60) + (degree.length > 70 ? "..." : "")}}</span>
+                                        <!-- <div class="text-slate-400">{{setting.desc}}</div> -->
+                                    </div>
+                                </div>
+                                <div v-for="setting in settingsDesc" class="flex flex-row m-2 my-4">
                                     <input type="checkbox" v-model="settings[setting.model]"
                                         class="h-4 w-4 m-4 flex-none" @change="saveSettings();"></input>
                                     <div>
@@ -197,11 +262,11 @@
                                     8-month
                                 </div>
                                 <div v-else-if="job.Duration.includes('2-term')"
-                                    class="whitespace-nowrap bg-orange-600 rounded-xl w-fit px-2 text-sm">
+                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                                     Dual-term
                                 </div>
                                 <div v-if="job.Special.includes('External')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit px-2 text-sm">
+                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                                     External Application
                                 </div>
                             </div>
