@@ -140,7 +140,7 @@ var app = new Vue({
 // ENDPOINT = new URL('http://localhost:3000/')
 typeof ENDPOINT === 'undefined' && fetchJSON()
 
-!app.settings && app.resetSettings()
+(!app.settings || !app.settings.themes) && app.resetSettings()
 localStorage.setItem("settings", JSON.stringify(app.settings))
 
 // Returns postings that match the set filters
