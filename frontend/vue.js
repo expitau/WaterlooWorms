@@ -9,7 +9,7 @@ var app = new Vue({
     passwordVisible: false,
     exportOpen: false,
     status: STATUS.AUTHENTICATING,
-    settingsOpen: true,
+    settingsOpen: false,
     settings: JSON.parse(localStorage.getItem("settings")),
     shortlist: JSON.parse(localStorage.getItem("shortlist")) ?? [],
     blacklist: JSON.parse(localStorage.getItem("blacklist")) ?? [],
