@@ -1,3 +1,5 @@
+let settingsVersion = 1.1
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -91,12 +93,12 @@ var app = new Vue({
     }
   },
   methods: {
-    makeVisible: (id,type) => {
+    makeVisible: (id, type) => {
       document.getElementById(`${type}-readmore-${id}`).classList.remove("truncate")
       document.getElementById(`${type}-readmore-${id}`).classList.remove("max-h-48")
       document.getElementById(`${type}-readmorebtn-${id}`).classList.add("hidden")
     },
-    getHeight: (id,type) => {
+    getHeight: (id, type) => {
       return document.getElementById(`${type}-readmore-${id}`).offsetHeight
     },
     UpdateURLSearch: () => {
@@ -113,6 +115,7 @@ var app = new Vue({
     },
     resetSettings: () => {
       app.settings = {
+        version: 1.1,
         themes: {},
         degrees: {},
         NoExternal: true,
@@ -138,9 +141,15 @@ var app = new Vue({
 
 // Comment out the next line to use local data
 // ENDPOINT = new URL('http://localhost:3000/')
-typeof ENDPOINT === 'undefined' && fetchJSON()
 
-(!app.settings || !app.settings.themes) && app.resetSettings()
+if (typeof ENDPOINT === 'undefined') {
+  fetchJSON('')
+}
+
+if (!(app.settings?.version == settingsVersion)){
+  app.resetSettings()
+}
+
 localStorage.setItem("settings", JSON.stringify(app.settings))
 
 // Returns postings that match the set filters
@@ -165,13 +174,13 @@ function getCleaned(postings) {
   }
 
   function themesAndDegreesActive() {
-    for ([theme,val] of Object.entries(app.settings.themes)){
-      if (val){
+    for ([theme, val] of Object.entries(app.settings.themes)) {
+      if (val) {
         return true
       }
     }
-    for ([degree,val] of Object.entries(app.settings.degrees)){
-      if (val){
+    for ([degree, val] of Object.entries(app.settings.degrees)) {
+      if (val) {
         return true
       }
     }
@@ -179,14 +188,14 @@ function getCleaned(postings) {
   }
 
   function matchesThemesAndDegrees(x) {
-    for (theme of x.TargetedClusters.themes){
+    for (theme of x.TargetedClusters.themes) {
       console.log(theme)
-      if (app.settings.themes[theme]){
+      if (app.settings.themes[theme]) {
         return true;
       }
     }
-    for (degree of x.TargetedClusters.degrees){
-      if (app.settings.degrees[degree]){
+    for (degree of x.TargetedClusters.degrees) {
+      if (app.settings.degrees[degree]) {
         return true;
       }
     }
