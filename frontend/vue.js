@@ -44,6 +44,11 @@ var app = new Vue({
         "desc": "Exclude job postings that are only for senior students"
       },
       {
+        "model": "NoSWPP",
+        "title": "No SWPP Positions",
+        "desc": "Exclude job postings that are only for Canadian students"
+      },
+      {
         "model": "RemoteOnly",
         "title": "Remote Only",
         "desc": "Exclude jobs postings that are not remote."
@@ -121,6 +126,7 @@ var app = new Vue({
         NoExternal: true,
         NoCoverLetters: true,
         FourMonthOnly: true,
+        FourMonthOnly: false,
         NoSenior: false,
         RemoteOnly: false,
         InPersonOnly: false,
@@ -218,6 +224,9 @@ function getCleaned(postings) {
 
     [app.settings.NoSenior,
     x => !x.Level[0].includes("Senior")],
+
+    [app.settings.NoSWPP,
+    x => !x.Special.includes("SWPP")],
 
     [app.settings.InPersonOnly,
     x => !x.Special.includes("Remote")],
