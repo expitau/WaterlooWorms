@@ -1,7 +1,7 @@
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING
     if (typeof ENDPOINT === 'undefined') {
-        fetch("./data.json")
+        fetch("./data/220102t-wwdata.json")
             .then(res => {
                 return res.json()
             })
@@ -43,7 +43,6 @@ function fetchJSON(password = "") {
                 app.status = STATUS.READY
             }
             if (xhr.readyState === 4 && xhr.status === 401) {
-                console.log("set auth failed")
                 app.status = STATUS.AUTH_FAILED
                 app.password = ""
                 document.getElementById("passwordinput").focus()

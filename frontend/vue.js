@@ -195,7 +195,6 @@ function getCleaned(postings) {
 
   function matchesThemesAndDegrees(x) {
     for (theme of x.TargetedClusters.themes) {
-      console.log(theme)
       if (app.settings.themes[theme]) {
         return true;
       }
