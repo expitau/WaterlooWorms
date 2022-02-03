@@ -30,6 +30,7 @@ function fetchJSON(password = "") {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 var json = JSON.parse(xhr.responseText);
                 for (const [key, value] of Object.entries(json)) {
+                    console.log(key, value)
                     app.postings.push(new JobPosting(key, value))
                 }
                 app.postings.forEach(x => {

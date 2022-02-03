@@ -13,6 +13,7 @@ var app = new Vue({
     settings: JSON.parse(localStorage.getItem("settings")),
     shortlist: JSON.parse(localStorage.getItem("shortlist")) ?? [],
     blacklist: JSON.parse(localStorage.getItem("blacklist")) ?? [],
+    viewedlist: JSON.parse(localStorage.getItem("viewedlist")) ?? [],
     search: new URLSearchParams(window.location.search).has('s') ? new URLSearchParams(window.location.search).get('s') : "",
     themeAndDegreesOpen: false,
     themeOpen: false,
@@ -83,18 +84,31 @@ var app = new Vue({
         "title": "Apply To Search Results",
         "desc": "Apply filters to search results"
       },
+      {
+        "model": "JobViewed",
+        "title": "See Job Posting",
+        "desc": "Retrieve 1 job posting to view in new page"
+      }
     ]
   },
   computed: {
     filteredPostings: function () {
       return app.search == "" ? getCleaned(app.postings) : getSearch(app.postings, app.search);
+      // simple if statement
     },
+
+    showJobPostings: function () {
+      return getJob(app.postings)
+    },
+
     Exported: function () {
       let shortliststr = ""
       let blackliststr = ""
+      let viewedliststr = ""
       app.shortlist.forEach(x => shortliststr += `\t\"${x}\",\n`)
       app.blacklist.forEach(x => blackliststr += `\t\"${x}\",\n`)
-      return `let SHORTLIST = [\n${shortliststr}];\n\nlet BLACKLIST = [\n${blackliststr}];`
+      app.viewedlist.forEach(x => viewedliststr += `\t\"${x}\",\n`)
+      return `let SHORTLIST = [\n${shortliststr}];\n\nlet VIEWEDLIST = [\n${viewedliststr}];`
     }
   },
   methods: {
@@ -141,6 +155,10 @@ var app = new Vue({
     saveLists: () => {
       localStorage.setItem('shortlist', JSON.stringify(app.shortlist))
       localStorage.setItem('blacklist', JSON.stringify(app.blacklist))
+      localStorage.setItem('viewedlist', JSON.stringify(app.viewedlist))
+    },
+    openJobPosting: (jobId) => {
+        window.open("job.html?jobId=" + jobId, '_blank')
     }
   }
 })
@@ -195,7 +213,7 @@ function getCleaned(postings) {
 
   function matchesThemesAndDegrees(x) {
     for (theme of x.TargetedClusters.themes) {
-      console.log(theme)
+//      console.log(theme)
       if (app.settings.themes[theme]) {
         return true;
       }
@@ -249,7 +267,28 @@ function getCleaned(postings) {
     [themesAndDegreesActive(),
     x => matchesThemesAndDegrees(x)]
 
-  ].forEach((x) => { x[0] && (() => { postings = postings.filter(x[1]) })() });
+  ].forEach((x) => {
+        x[0] && (() => {console.log(postings); postings = postings.filter(x[1]) })()
+        });
+
+  return postings
+}
+
+function getJob(postings) {
+  // Filters title to only match software and math jobs
+  console.log("Inside getJob")
+  function filterJobId(postingId) {
+    console.log("Inside filterJobId")
+      if ((new RegExp(236724, "gi")).test(postingId)) {
+
+        console.log("Testing if jobIdSelected == jobId")
+        return true
+      }
+    return false
+  }
+  // Apply filters
+  [x => filterJobId(x.Id)].forEach((x) => {() => {console.log(postings); postings = postings.filter(x) }})
+//  () => {postings => postings.filter(filterJobId(x.Id), x)};
 
   return postings
 }

@@ -8,35 +8,34 @@ function extractText(text, extract) {
     return out
 }
 
-class JobPosting {
+class Snippet {
     constructor(id, data) {
         this.Id = id
         this.Title = data["Job Posting Information"]["Job Title:"]
         this.Company = data["Company Information"]["Organization:"]
         this.Location = data["Job Posting Information"]["Job - City:"]
-        this.Openings = +data["Job Posting Information"]["Number of Job Openings:"]
-        this.Term = data["Job Posting Information"]["Work Term:"]
-        this.Duration = extractText(data["Job Posting Information"]["Work Term Duration:"], {
-            "8-month": "8 month consecutive work term required",
-            "8-month preferred": "8 month consecutive work term preferred",
-            "4-month": "4 month work term",
-            "2-term": "2 work term commitment"
-        })
-        this.Special = extractText(data["Job Posting Information"]["Special Job Requirements:"], {
-            "External": "directly to the employer",
-            "Timezone": "recruitment timelines do not correspond to the University of Waterloo's",
-            "Remote": "remote",
-            "SWPP": "SWPP",
-        })
-        this.Documents = extractText(data["Application Information"]["Application Documents Required:"], {
-            "Resume": "Résumé",
-            "Grade": "Grades Report",
-            "Cover Letter": "Cover Letter"
-        })
+//        this.Openings = +data["Job Posting Information"]["Number of Job Openings:"]
+//        this.Term = data["Job Posting Information"]["Work Term:"]
+//        this.Duration = extractText(data["Job Posting Information"]["Work Term Duration:"], {
+//            "8-month": "8 month consecutive work term required",
+//            "8-month preferred": "8 month consecutive work term preferred",
+//            "4-month": "4 month work term",
+//            "2-term": "2 work term commitment"
+//        })
+//        this.Special = extractText(data["Job Posting Information"]["Special Job Requirements:"], {
+//            "External": "directly to the employer",
+//            "Timezone": "recruitment timelines do not correspond to the University of Waterloo's",
+//            "Remote": "remote",
+//            "SWPP": "SWPP",
+//        })
+//        this.Documents = extractText(data["Application Information"]["Application Documents Required:"], {
+//            "Resume": "Résumé",
+//            "Grade": "Grades Report",
+//            "Cover Letter": "Cover Letter"
+//        })
         this.Skills = extractText(data["Job Posting Information"]["Required Skills:"], techsobj)
         this.Level = extractText(data["Job Posting Information"]["Level:"], { "Junior": "Junior", "Intermediate": "Intermediate", "Senior": "Senior" })
         this.Summary = data["Job Posting Information"]["Job Summary:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
-//        this.Snippet = this.Summary[200]; //TODO: replace with snippet generating logic
         this.Responsibilities = data["Job Posting Information"]["Job Responsibilities:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
         this.ReqSkills = data["Job Posting Information"]["Required Skills:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
         this.Compensation = data["Job Posting Information"]["Compensation and Benefits Information:"]?.replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");

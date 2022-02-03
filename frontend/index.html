@@ -5,19 +5,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WaterlooWorks Now</title>
+    <title>Waterloo SearchWorks</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
-    <div class="bg-slate-900 w-screen h-screen text-slate-100 p-4 overflow-x-hidden overflow-y-auto">
+    <div class="bg-black w-screen h-screen text-slate-100 p-4 overflow-x-hidden overflow-y-auto">
         <div id="app">
             <!-- Navbar -->
             <div class="flex flex-col sm:flex-row">
                 <!-- Title -->
-                <div class="text-xl flex-grow">WaterlooWorks <span class="text-blue-500 font-bold">Now</span></div>
+                <div class="text-xl flex-grow">Waterloo<span class="text-amber-300 font-bold"> SearchWorks</span></div>
 
                 <!-- Searchbar -->
                 <div v-if="status == STATUS.READY"
@@ -49,17 +49,7 @@
 
             <!-- Main page -->
             <div id="body" class="sm:p-4 flex flex-col" v-else>
-                <div class="flex flex-row justify-center">
-                    <!-- Settings button -->
-                    <button
-                        class="ext-lg m-4 mb-0 bg-blue-600 p-2 rounded-md drop-shadow-md text-base hover:bg-blue-500"
-                        @click="settingsOpen = true">Settings</button>
-
-                    <!-- Export button -->
-                    <button
-                        class="text-lg m-4 mb-0 bg-gray-600 p-2 rounded-md drop-shadow-md text-base hover:bg-gray-500"
-                        @click="exportOpen = true">Export shortlist</button>
-                </div>
+<!--                </div>-->
                 <div class="flex flex-col justify-between w-full sm:flex-row text-center sm:text-left mt-2 sm:mt-0">
                     <div class="m-2 mt-0 flex-none">Found {{filteredPostings.length}} of {{postings.length}} jobs
                         (showing 1-25)</div>
@@ -88,209 +78,33 @@
                     <div class="fixed top-0 left-0 w-full h-full z-20"
                         style="background-color: rgba(15, 23, 42, 0.678);">
                     </div>
-                    <div
-                        class="absolute sm:fixed px-2 sm:px-8 w-fit z-30 top-0 sm:top-4 sm:bottom-4 mx-auto left-0 right-0 bg-slate-800 rounded-lg overflow-y-auto">
-                        <button class="absolute right-0 p-4" @click="settingsOpen = false"><svg
-                                xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg></button>
-                        <div class="text-xl text-center py-4">Settings</div>
-                        <!-- List of settings -->
-                        <div class="flex flex-col">
-                            <div class="mx-auto">
-                                <div class="flex flex-row ml-5">
-                                    <button @click="themeAndDegreesOpen = !themeAndDegreesOpen">
-                                        <svg v-if="!themeAndDegreesOpen" xmlns="http://www.w3.org/2000/svg"
-                                            class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 5l7 7-7 7" />
-                                        </svg>
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                    <div>
-                                        <div class="text-slate-100 ml-2">Theme & Degree Filters</div>
-                                    </div>
-                                </div>
-                                <div v-if="themeAndDegreesOpen" class="flex flex-col ml-6">
-                                    <div class="flex flex-row m-2 ml-5">
-                                        <button @click="themeOpen = !themeOpen">
-                                            <svg v-if="!themeOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </button>
-                                        <div>
-                                            <div class="text-slate-100 ml-2">Themes</div>
-                                        </div>
-                                    </div>
-                                    <div v-if="themeOpen" v-for="theme in themesAndDegrees.themes" class="ml-8 flex flex-row" >
-                                        <input type="checkbox" v-model="settings.themes[theme]"
-                                            class="h-4 w-4 m-3 flex-none" @change="saveSettings();"></input>
-                                        <span class="text-slate-100 my-2">{{theme.substr(0,60) + (theme.length > 70 ? "..." : "")}}</span>
-                                        <!-- <div class="text-slate-400">{{setting.desc}}</div> -->
-                                    </div>
-                                    <div class="flex flex-row m-2 ml-5">
-                                        <button @click="degreeOpen = !degreeOpen">
-                                            <svg v-if="!degreeOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </button>
-                                        <div>
-                                            <div class="text-slate-100 ml-2">Degrees</div>
-                                        </div>
-                                    </div>
-                                    <div v-if="degreeOpen" v-for="degree in themesAndDegrees.degrees" class="ml-8 flex flex-row" >
-                                        <input type="checkbox" v-model="settings.degrees[degree]"
-                                            class="h-4 w-4 m-3 flex-none" @change="saveSettings();"></input>
-                                        <span class="text-slate-100 my-2">{{degree.substr(0,60) + (degree.length > 70 ? "..." : "")}}</span>
-                                        <!-- <div class="text-slate-400">{{setting.desc}}</div> -->
-                                    </div>
-                                </div>
-                                <div v-for="setting in settingsDesc" class="flex flex-row m-2 my-4">
-                                    <input type="checkbox" v-model="settings[setting.model]"
-                                        class="h-4 w-4 m-4 flex-none" @change="saveSettings();"></input>
-                                    <div>
-                                        <span class="text-slate-100">{{setting.title}}</span>
-                                        <div class="text-slate-400">{{setting.desc}}</div>
-                                    </div>
-                                </div>
-                                <!-- Reset button -->
-                                <button
-                                    class="ml-12 text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
-                                    @click="resetSettings()">Reset Defaults</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Export modal -->
-                <div v-if="exportOpen">
-                    <div class="fixed top-0 left-0 w-full h-full z-20"
-                        style="background-color: rgba(15, 23, 42, 0.678);">
-                    </div>
-                    <div
-                        class="absolute sm:fixed px-8 w-fit z-30 my-auto top-0 sm:top-12 h-full sm:h-2/3 mx-auto left-0 right-0 bg-slate-800 rounded-lg overflow-y-auto">
-                        <!-- Close button -->
-                        <button class="absolute right-0 p-4" @click="exportOpen = false"><svg
-                                xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg></button>
-                        <!-- Title -->
-                        <div class="text-xl text-center py-4">Export</div>
-                        <!-- Export pane -->
-                        <div class="mx-auto p-6 bg-slate-900 rounded-md h-2/3" style="font-family: monospace;">
-                            <div class="w-72 h-full whitespace-pre-wrap overflow-y-auto">{{Exported}}</div>
-                        </div>
-
-                        <!-- Clear buttons -->
-                        <div class="flex flex-row justify-center">
-                            <button class="text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
-                                @click="shortlist = []; saveLists()">Clear Shortlist</button>
-                            <button class="text-md m-4 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
-                                @click="blacklist = []; saveLists()">Clear Blacklist</button>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- List of jobs -->
                 <div class="flex flex-col space-y-4">
-                    <div class="bg-slate-800 w-full drop-shadow-md rounded-md p-6 flex flex-col sm:flex-row sm:space-x-12"
+                    <div class="bg-white w-full drop-shadow-md rounded-md p-6 flex flex-col sm:flex-row sm:space-x-12"
                         v-for="job of filteredPostings.slice(25*page,25*page+25)" v-bind:id="job.Id">
-                        <div class="flex-none w-full sm:w-1/3 overflow-x-wrap">
-                            <div class="flex flex-row">
-                                <div class="text-2xl text-slate-100 w-full sm:w-5/6">{{job.Title}}
-                                </div>
-                                <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" v-if="shortlist.includes(job.Id)">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" v-if="blacklist.includes(job.Id)">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
+                        <div class="flex-none w-full sm:w-1/6 overflow-x-wrap">
 
-                            <div class="text-lg text-slate-200">{{job.Id}} - {{job.Company}} - {{job.Location}}
-                            </div>
-                            <!-- Pills -->
-                            <div class="flex flex-row flex-wrap">
-                                <div v-if="job.Special.includes('Remote')"
-                                    class="whitespace-nowrap bg-gray-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    In person
-                                </div>
-                                <div v-else
-                                    class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    Remote
-                                </div>
-                                <div v-if="job.Documents.includes('Cover Letter')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    Cover letter
-                                </div>
-                                <div v-if="job.Duration.includes('4-month')"
-                                    class="whitespace-nowrap bg-gray-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    4-month
-                                </div>
-                                <div v-else-if="job.Duration.includes('8-month preferred')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    8-month preferred
-                                </div>
-                                <div v-else-if="job.Duration.includes('8-month')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    8-month
-                                </div>
-                                <div v-else-if="job.Duration.includes('2-term')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    Dual-term
-                                </div>
-                                <div v-if="job.Special.includes('External')"
-                                    class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    External Application
-                                </div>
-                                <div v-if="job.Special.includes('SWPP')"
-                                    class="whitespace-nowrap bg-gray-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                    SWPP
-                                </div>
-                            </div>
                             <!-- Shortlist / blacklist buttons -->
                             <button
-                                class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                                class="mx-auto text-md m-3 bg-sky-800 p-2 rounded-md drop-shadow-md hover:bg-sky-700"
                                 @click="shortlist.push(job.Id);saveLists()"
                                 v-if="!shortlist.includes(job.Id)">Shortlist</button>
                             <button
-                                class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                                class="mx-auto text-md m-3 bg-lime-800 p-2 rounded-md drop-shadow-md hover:bg-lime-700"
                                 @click="shortlist.splice(shortlist.indexOf(job.Id),1);saveLists()"
                                 v-else>Unshortlist</button>
                             <button
                                 class="mx-auto text-md m-3 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
-                                @click="blacklist.push(job.Id);saveLists()"
-                                v-if="!blacklist.includes(job.Id)">Blacklist</button>
+                                @click="viewedlist.push(job.Id);saveLists();openJobPosting(job.Id)"
+                                v-if="!viewedlist.includes(job.Id)">View Job
+<!--                                <a href="job.html" target="__blank">View Job</a>-->
+                            </button>
                             <button
-                                class="mx-auto text-md m-3 bg-gray-600 p-2 rounded-md drop-shadow-md hover:bg-gray-500"
-                                @click="blacklist.splice(blacklist.indexOf(job.Id),1);saveLists()"
-                                v-else>Unblacklist</button>
+                                class="mx-auto text-md m-3 bg-lime-600 p-2 rounded-md drop-shadow-md hover:bg-lime-500"
+                                @click="viewedlist.splice(shortlist.indexOf(job.Id),1);saveLists()"
+                                v-else>View Job</button>
 
                             <!-- Tech used -->
                             <div class="mt-5" v-if="job.Skills.length > 0">
@@ -305,7 +119,13 @@
                         <!-- Job description -->
                         <div class="">
                             <div>
-                                <div class="font-bold">Summary</div>
+                                 <div class="flex flex-row">
+                                <div class="text-2xl text-black w-full sm:w-5/6">{{job.Title}}
+                                </div>
+                                </div>
+
+                                <div class="text-lg text-black">{{job.Id}} - {{job.Company}} - {{job.Location}}
+                                </div>
                                 <div class="block sm:hidden">
                                     <div class="whitespace-pre-line max-h-48 truncate"
                                         v-bind:id="'summary-readmore-'+job.Id">
@@ -316,59 +136,8 @@
                                             class="underline underline-offset-1 decoration-1">Read more</span>
                                         ]</button>
                                 </div>
-                                <div class="hidden sm:block whitespace-pre-line">
+                                <div class="hidden sm:block whitespace-pre-line text-black">
                                     {{job.Summary}}
-                                </div>
-                            </div>
-                            <br>
-                            <div>
-                                <div class="font-bold">Responsibilities</div>
-                                <div class="block sm:hidden">
-                                    <div class="whitespace-pre-line max-h-48 truncate"
-                                        v-bind:id="'responsibilities-readmore-'+job.Id">
-                                        {{job.Responsibilities}}
-                                    </div>
-                                    <button v-bind:id="'responsibilities-readmorebtn-'+job.Id" class="text-center m-1"
-                                        @click="makeVisible(job.Id,'responsibilities')">[ <span
-                                            class="underline underline-offset-1 decoration-1">Read more</span>
-                                        ]</button>
-                                </div>
-                                <div class="hidden sm:block whitespace-pre-line">
-                                    {{job.Responsibilities}}
-                                </div>
-                            </div>
-                            <br>
-                            <div>
-                                <div class="font-bold">Required Skills</div>
-                                <div class="block sm:hidden">
-                                    <div class="whitespace-pre-line max-h-48 truncate"
-                                        v-bind:id="'reqskills-readmore-'+job.Id">
-                                        {{job.ReqSkills}}
-                                    </div>
-                                    <button v-bind:id="'reqskills-readmorebtn-'+job.Id" class="text-center m-1"
-                                        @click="makeVisible(job.Id,'reqskills')">[ <span
-                                            class="underline underline-offset-1 decoration-1">Read more</span>
-                                        ]</button>
-                                </div>
-                                <div class="hidden sm:block whitespace-pre-line">
-                                    {{job.ReqSkills}}
-                                </div>
-                            </div>
-                            <br>
-                            <div>
-                                <div v-if="job.Compensation" class="font-bold">Compensation & Benefits</div>
-                                <div v-if="job.Compensation" class="block sm:hidden">
-                                    <div class="whitespace-pre-line max-h-48 truncate"
-                                        v-bind:id="'compensation-readmore-'+job.Id">
-                                        {{job.Compensation}}
-                                    </div>
-                                    <button v-bind:id="'compensation-readmorebtn-'+job.Id" class="text-center m-1"
-                                        @click="makeVisible(job.Id,'compensation')">[ <span
-                                            class="underline underline-offset-1 decoration-1">Read more</span>
-                                        ]</button>
-                                </div>
-                                <div v-if="job.Compensation" class="hidden sm:block whitespace-pre-line">
-                                    {{job.Compensation}}
                                 </div>
                             </div>
                         </div>

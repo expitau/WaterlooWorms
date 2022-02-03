@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waterloo SearchWorks</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="bg-black w-screen h-screen text-slate-100 p-4 overflow-x-hidden overflow-y-auto">
+        <div id="app">
+            <!-- Navbar -->
+            <div class="flex flex-col sm:flex-row">
+                <!-- Title -->
+                <div class="text-xl flex-grow">Waterloo<span class="text-amber-300 font-bold"> SearchWorks</span></div>
+            </div>
+            <hr class="border-slate-500 mt-1">
+
+            <!-- Login page -->
+            <div v-if="status == STATUS.AUTHENTICATING || status == STATUS.AUTH_FAILED" class="flex flex-col">
+                <div class="mt-32"></div>
+                <div v-if="status == STATUS.AUTH_FAILED" class="mx-auto my-1 text-red-500">Login failed</div>
+                <div v-else class="mx-auto my-1 ">Authentication Required</div>
+                <input id="passwordinput" type="password" v-model="password"
+                    class="text-slate-900 p-1 pl-2 rounded-lg w-96 mx-auto" v-on:keyup.enter="submitPassword"></input>
+            </div>
+
+            <!-- Loading screen -->
+            <div v-else-if="status == STATUS.LOADING" class="text-center text-lg mt-32">Loading...</div>
+
+            <!-- Main page -->
+            <div id="body" class="sm:p-4 flex flex-col" v-else>
+                <div class="flex flex-col justify-between w-full sm:flex-row text-center sm:text-left mt-2 sm:mt-0">
+                    <div class="flex-grow"></div>
+                </div>
+                <!-- Settings modal -->
+                <div v-if="settingsOpen">
+                    <div class="fixed top-0 left-0 w-full h-full z-20"
+                        style="background-color: rgba(15, 23, 42, 0.678);">
+                    </div>
+                </div>
+
+                <!-- Jobs Page -->
+                <div class="flex flex-col space-y-4">
+                    <div class="bg-white w-full drop-shadow-md rounded-md p-6 flex flex-col sm:flex-row sm:space-x-12"
+                        v-for="job of showJobPostings">
+
+                        <!-- Job description -->
+                        <div class="">
+                            <div>
+                                 <div class="flex flex-row">
+                                <div class="text-2xl text-black w-full sm:w-5/6">{{job.Title}}
+                                </div>
+                                </div>
+
+                                <div class="text-lg text-black">{{job.Id}} - {{job.Company}} - {{job.Location}}
+                                </div>
+                                </div>
+                                <div class="hidden sm:block whitespace-pre-line text-black">
+                                    {{job.Summary}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+<script src="./functions/status.js"></script>
+<script src="./functions/jobposting.js"></script>
+<script src="./functions/fetch.js"></script>
+<script src="./functions/tech.js"></script>
+<script src="vue.js"></script>
+
+</html>
