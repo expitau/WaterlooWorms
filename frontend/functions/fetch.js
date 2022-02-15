@@ -1,7 +1,7 @@
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING
     if (typeof ENDPOINT === 'undefined') {
-        fetch("./data/220102t-wwdata.json")
+        fetch("https://expitau-dev.github.io/WaterlooWorksNow/frontend/data/220201-wwdata.json")
             .then(res => {
                 return res.json()
             })

@@ -146,7 +146,7 @@ var app = new Vue({
 })
 
 // Comment out the next line to use local data
-// ENDPOINT = new URL('http://localhost:3000/')
+// ENDPOINT = new URL('https://expitau-dev.github.io/WaterlooWorksNow/frontend/data/220101t-wwdata.json')
 
 if (typeof ENDPOINT === 'undefined') {
   fetchJSON('')
