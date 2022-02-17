@@ -92,9 +92,11 @@ var app = new Vue({
     Exported: function () {
       let shortliststr = ""
       let blackliststr = ""
-      app.shortlist.forEach(x => shortliststr += `\t\"${x}\",\n`)
-      app.blacklist.forEach(x => blackliststr += `\t\"${x}\",\n`)
-      return `let SHORTLIST = [\n${shortliststr}];\n\nlet BLACKLIST = [\n${blackliststr}];`
+      // app.shortlist.forEach(x => shortliststr += `\t\"${x}\",\n`)
+      // app.blacklist.forEach(x => blackliststr += `\t\"${x}\",\n`)
+      shortliststr = app.shortlist.join(", ")
+      blackliststr = app.blacklist.join(", ")
+      return `SHORTLIST: ${shortliststr}\n\nBLACKLIST: ${blackliststr}`
     }
   },
   methods: {
