@@ -1,3 +1,14 @@
+.bg-blue-600 {
+    background-color: rgb(130, 113, 226);
+}
+.text-blue-500 {
+    color: rgb(130, 113, 226);
+}
+
+.bg-blue-500 :hover {
+    background-color: rgb(192, 0, 80) !important;
+
+}
 
 ::-webkit-scrollbar { 
     width: 16px; 
