@@ -50,8 +50,8 @@
             <!-- Main page -->
             <div id="body" class="grow flex flex-col md:flex-row overflow-y-hidden" v-else>
                 <div
-                    class="bg-zinc-800 flex flex-row md:flex-col items-center md:w-14 md:hover:w-32 h-16 md:h-full flex-none transition-all ease-in-out">
-                    <button class="group hover:bg-blue-500 p-4 rounded-md w-full"
+                    class="group bg-zinc-800 flex flex-row md:flex-col items-center md:w-14 md:hover:w-32 h-16 md:h-full flex-none transition-all ease-in-out duration-200 overflow-hidden ">
+                    <button class="hover:bg-blue-500 p-4 rounded-md w-full"
                         v-bind:class="{'bg-zinc-700':(panel=='home')}" @click="panel = 'home'">
                         <div class="flex flex-row justify-center items-center min-w-fit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-none" viewBox="0 0 20 20"
@@ -60,12 +60,12 @@
                                     d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                             </svg>
                             <div
-                                class="text-transparent group-hover:text-zinc-100 w-0 group-hover:w-full overflow-hidden delay-50 transition-all ease-in-out px-2">
+                                class="text-transparent group-hover:text-zinc-100 w-full delay-50 duration-100 transition-all ease-in-out px-2">
                                 Home
                             </div>
                         </div>
                     </button>
-                    <button class="group hover:bg-blue-500 p-4 rounded-md w-full"
+                    <button class="hover:bg-blue-500 p-4 rounded-md w-full"
                         v-bind:class="{'bg-zinc-700':(panel=='settings')}" @click="panel = 'settings'">
                         <div class="flex flex-row justify-center items-center min-w-fit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-none" viewBox="0 0 20 20"
@@ -75,12 +75,12 @@
                                     clip-rule="evenodd" />
                             </svg>
                             <div
-                                class="text-transparent group-hover:text-zinc-100 w-0 group-hover:w-full overflow-hidden delay-50 transition-all ease-in-out px-2">
+                                class="text-transparent group-hover:text-zinc-100 w-full delay-50 duration-100 transition-all ease-in-out px-2">
                                 Settings
                             </div>
                         </div>
                     </button>
-                    <button class="group hover:bg-blue-500 p-4 rounded-md w-full"
+                    <button class="hover:bg-blue-500 p-4 rounded-md w-full"
                         v-bind:class="{'bg-zinc-700':(panel=='export')}" @click="panel = 'export'">
                         <div class="flex flex-row justify-center items-center min-w-fit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-none" viewBox="0 0 20 20"
@@ -90,7 +90,7 @@
                                     clip-rule="evenodd" />
                             </svg>
                             <div
-                                class="text-transparent group-hover:text-zinc-100 w-0 group-hover:w-full overflow-hidden delay-50 transition-all ease-in-out px-2">
+                                class="text-transparent group-hover:text-zinc-100 w-full delay-50 duration-100 transition-all ease-in-out px-2">
                                 Export
                             </div>
                         </div>
@@ -285,6 +285,27 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-row justify-center w-full">
+                            <div class="m-2 mt-0 flex-none flex flex-row mx-auto sm:mx-2">
+                                <button class="text-zinc-100" @click="page = Math.max(page-1, 0)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <div class="text-zinc-100">{{page+1}} of {{Math.ceil(filteredPostings.length / 25)}}
+                                </div>
+                                <button class="text-zinc-100"
+                                    @click="page = Math.min(page+1, Math.ceil(filteredPostings.length / 25) - 1)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>

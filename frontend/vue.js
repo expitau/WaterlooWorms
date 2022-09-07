@@ -147,7 +147,7 @@ var app = new Vue({
 })
 
 // Comment out the next line to use local data
-// ENDPOINT = new URL('https://expitau-dev.github.io/WaterlooWorksNow/frontend/data/220101t-wwdata.json')
+ENDPOINT = new URL('http://172.26.80.1:3000/')
 
 if (typeof ENDPOINT === 'undefined') {
   fetchJSON('')
@@ -256,6 +256,14 @@ function getCleaned(postings) {
 
 // Get postings that match search results
 function getSearch(postings, search) {
-  search = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi")
+  if (!search.match(/^\/.*\/$/)) {
+    search = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi")
+  } else {
+    try {
+      search = new RegExp(search.slice(1, -1))
+    } catch {
+      search = new RegExp("$^")
+    }
+  }
   return (app.settings.ApplyToSearch ? getCleaned(postings) : postings).filter(x => search.test(x.Id) || search.test(x.Title) || search.test(x.Company) || search.test(x.Location) || search.test(x.Summary) || search.test(x.Responsibilities) || search.test(x.ReqSkills) || search.test(x.Compensation))
 }

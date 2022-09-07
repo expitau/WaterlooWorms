@@ -12,7 +12,7 @@ class JobPosting {
     constructor(id, data) {
         this.Id = id
         this.Title = data["Job Posting Information"]["Job Title:"]
-        this.Company = data["Company Information"]["Organization:"]
+        this.Company = data["Company Info"] ? data["Company Info"]["Organization:"] : data["Company Information"]["Organization:"]
         this.Location = data["Job Posting Information"]["Job - City:"]
         this.Openings = +data["Job Posting Information"]["Number of Job Openings:"]
         this.Term = data["Job Posting Information"]["Work Term:"]

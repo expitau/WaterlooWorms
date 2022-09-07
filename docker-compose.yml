@@ -7,11 +7,11 @@ services:
       - ./frontend:/usr/share/nginx/html
     ports:
       - 8080:80
-  # backend:
-  #   image: node:alpine
-  #   working_dir: /app
-  #   command: node server.js
-  #   volumes:
-  #     - ./backend:/app
-  #   ports:
-  #     - 3000:3000
+  backend:
+    image: node:alpine
+    working_dir: /app
+    command: node server.js
+    volumes:
+      - ./backend:/app
+    ports:
+      - 3000:3000
