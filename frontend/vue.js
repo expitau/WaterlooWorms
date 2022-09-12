@@ -147,9 +147,10 @@ var app = new Vue({
 })
 
 // Comment out the next line to use local data
-ENDPOINT = new URL('http://172.26.80.1:3000/')
+ENDPOINT = new URL(`http://${location.host.split(":")[0]}:3000/`)
+SKIP_AUTH = true
 
-if (typeof ENDPOINT === 'undefined') {
+if (typeof ENDPOINT === 'undefined' || SKIP_AUTH) {
   fetchJSON('')
 }
 
@@ -256,14 +257,23 @@ function getCleaned(postings) {
 
 // Get postings that match search results
 function getSearch(postings, search) {
+  let invertSearch = false
+  if (search.startsWith("!")){
+    invertSearch = true
+    search = search.slice(1)
+  }
   if (!search.match(/^\/.*\/$/)) {
-    search = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi")
+    query = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi")
   } else {
     try {
-      search = new RegExp(search.slice(1, -1))
+      query = new RegExp(search.slice(1, -1))
     } catch {
-      search = new RegExp("$^")
+      query = new RegExp("$^")
     }
   }
-  return (app.settings.ApplyToSearch ? getCleaned(postings) : postings).filter(x => search.test(x.Id) || search.test(x.Title) || search.test(x.Company) || search.test(x.Location) || search.test(x.Summary) || search.test(x.Responsibilities) || search.test(x.ReqSkills) || search.test(x.Compensation))
+  if (!invertSearch){
+    return (app.settings.ApplyToSearch ? getCleaned(postings) : postings).filter(x => query.test(x.Id) || query.test(x.Title) || query.test(x.Company) || query.test(x.Location) || query.test(x.Summary) || query.test(x.Responsibilities) || query.test(x.ReqSkills) || query.test(x.Compensation))
+  } else {
+    return (app.settings.ApplyToSearch ? getCleaned(postings) : postings).filter(x => !(query.test(x.Id) || query.test(x.Title) || query.test(x.Company) || query.test(x.Location) || query.test(x.Summary) || query.test(x.Responsibilities) || query.test(x.ReqSkills) || query.test(x.Compensation)))
+  }
 }

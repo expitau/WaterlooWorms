@@ -10,7 +10,7 @@ services:
   backend:
     image: node:alpine
     working_dir: /app
-    command: node server.js
+    command: npm start
     volumes:
       - ./backend:/app
     ports:
