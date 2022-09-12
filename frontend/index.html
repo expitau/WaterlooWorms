@@ -412,7 +412,10 @@
                         <div class="text-xl text-center py-4">Export</div>
                         <!-- Export pane -->
                         <div class="mx-auto p-6 bg-zinc-800 rounded-md h-2/3" style="font-family: monospace;">
-                            <div class="w-72 h-full whitespace-pre-wrap overflow-y-auto">{{Exported}}</div>
+                            <div class="w-full h-full whitespace-pre-wrap overflow-y-auto">
+                                <div>SHORTLIST: <span v-for="item in shortlist"><button class="hover:bg-zinc-500 rounded" @click="shortlist = shortlist.filter(x => x != item)">{{item}}</button>, </span></div>
+                                <div>BLACKLIST: <span v-for="item in blacklist"><button class="hover:bg-zinc-500 rounded" @click="blacklist = blacklist.filter(x => x != item)">{{item}}</button>, </span></div>
+                            </div>
                         </div>
 
                         <!-- Clear buttons -->

@@ -7,7 +7,7 @@ var app = new Vue({
     postings: [],
     password: "",
     passwordVisible: false,
-    panel: 'home',
+    panel: 'export',
     status: STATUS.AUTHENTICATING,
     settings: JSON.parse(localStorage.getItem("settings")),
     shortlist: JSON.parse(localStorage.getItem("shortlist")) ?? [],
