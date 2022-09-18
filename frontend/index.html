@@ -26,13 +26,13 @@
         <div class="flex flex-row">
             <div class="text-2xl text-zinc-100 w-full sm:w-5/6">{{job.title}}
             </div>
-            <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" v-if="shortlist.includes(job.id)">
+            <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                v-if="shortlist.includes(job.id)">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" v-if="blacklist.includes(job.id)">
+            <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                v-if="blacklist.includes(job.id)">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -50,8 +50,7 @@
                 class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                 In person
             </div>
-            <div v-else
-                class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+            <div v-else class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                 Remote
             </div>
             <div v-if="job.documents.includes('Cover Letter')"
@@ -85,22 +84,14 @@
         </div>
         <!-- Shortlist / blacklist buttons -->
         <div class="flex flex-row justify-start">
-            <button
-                class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
-                @click="shortlist.push(job.id);saveLists()"
-                v-if="!shortlist.includes(job.id)">Shortlist</button>
-            <button
-                class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
-                @click="shortlist.splice(shortlist.indexOf(job.id),1);saveLists()"
-                v-else>Unshortlist</button>
-            <button
-                class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
-                @click="blacklist.push(job.id);saveLists()"
-                v-if="!blacklist.includes(job.id)">Blacklist</button>
-            <button
-                class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
-                @click="blacklist.splice(blacklist.indexOf(job.id),1);saveLists()"
-                v-else>Unblacklist</button>
+            <button class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                @click="shortlist.push(job.id);saveLists()" v-if="!shortlist.includes(job.id)">Shortlist</button>
+            <button class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                @click="shortlist.splice(shortlist.indexOf(job.id),1);saveLists()" v-else>Unshortlist</button>
+            <button class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
+                @click="blacklist.push(job.id);saveLists()" v-if="!blacklist.includes(job.id)">Blacklist</button>
+            <button class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
+                @click="blacklist.splice(blacklist.indexOf(job.id),1);saveLists()" v-else>Unblacklist</button>
         </div>
 
         <!-- Tech used -->
@@ -118,8 +109,7 @@
         <div>
             <div class="font-bold">Summary</div>
             <div class="block sm:hidden">
-                <div class="whitespace-pre-line max-h-48 truncate"
-                    v-bind:id="'summary-readmore-'+job.id">
+                <div class="whitespace-pre-line max-h-48 truncate" v-bind:id="'summary-readmore-'+job.id">
                     {{job.summary}}
                 </div>
                 <button v-bind:id="'summary-readmorebtn-'+job.id" class="text-center m-1"
@@ -135,12 +125,10 @@
         <div>
             <div class="font-bold">Responsibilities</div>
             <div class="block sm:hidden">
-                <div class="whitespace-pre-line max-h-48 truncate"
-                    v-bind:id="'responsibilities-readmore-'+job.id">
+                <div class="whitespace-pre-line max-h-48 truncate" v-bind:id="'responsibilities-readmore-'+job.id">
                     {{job.responsibilities}}
                 </div>
-                <button v-bind:id="'responsibilities-readmorebtn-'+job.id"
-                    class="text-center m-1"
+                <button v-bind:id="'responsibilities-readmorebtn-'+job.id" class="text-center m-1"
                     @click="makeVisible(job.id,'responsibilities')">[
                     <span class="underline underline-offset-1 decoration-1">Read more</span>
                     ]</button>
@@ -153,8 +141,7 @@
         <div>
             <div class="font-bold">Required Skills</div>
             <div class="block sm:hidden">
-                <div class="whitespace-pre-line max-h-48 truncate"
-                    v-bind:id="'reqskills-readmore-'+job.id">
+                <div class="whitespace-pre-line max-h-48 truncate" v-bind:id="'reqskills-readmore-'+job.id">
                     {{job.skills}}
                 </div>
                 <button v-bind:id="'reqskills-readmorebtn-'+job.id" class="text-center m-1"
@@ -170,18 +157,27 @@
         <div>
             <div v-if="job.compensation" class="font-bold">Compensation & Benefits</div>
             <div v-if="job.compensation" class="block sm:hidden">
-                <div class="whitespace-pre-line max-h-48 truncate"
-                    v-bind:id="'compensation-readmore-'+job.id">
+                <div class="whitespace-pre-line max-h-48 truncate" v-bind:id="'compensation-readmore-'+job.id">
                     {{job.compensation}}
                 </div>
-                <button v-bind:id="'compensation-readmorebtn-'+job.id"
-                    class="text-center m-1" @click="makeVisible(job.id,'compensation')">[
+                <button v-bind:id="'compensation-readmorebtn-'+job.id" class="text-center m-1"
+                    @click="makeVisible(job.id,'compensation')">[
                     <span class="underline underline-offset-1 decoration-1">Read more</span>
                     ]</button>
             </div>
             <div v-if="job.compensation" class="hidden sm:block whitespace-pre-line">
                 {{job.compensation}}
             </div>
+        </div>
+    </div>
+</template>
+
+<template id="settingTemplate">
+    <div class="flex flex-row m-2 my-4">
+        <input type="checkbox" v-model="value" class="h-4 w-4 m-4 flex-none" @change="$emit('change')"></input>
+        <div>
+            <span class="text-zinc-100">{{title}}</span>
+            <div class="text-zinc-400">{{desc}}</div>
         </div>
     </div>
 </template>
@@ -422,14 +418,48 @@
                                         <!-- <div class="text-zinc-400">{{setting.desc}}</div> -->
                                     </div>
                                 </div>
-                                <div v-for="setting in settingsDesc" class="flex flex-row m-2 my-4">
+                                <setting v-model="settings.NoExternal" title="No External"
+                                    desc="Exclude job postings that require an external application"
+                                    @change="saveSettings();"></setting>
+                                <setting v-model="settings.NoCoverLetters" title="No Cover Letters"
+                                    desc="Exclude job postings that require a cover letter" @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.FourMonthOnly" title="4 Month Only"
+                                    desc="Exclude job postings that are not 4-month positions"
+                                    @change="saveSettings();"></setting>
+                                <setting v-model="settings.NoSenior" title="No Senior Positions"
+                                    desc="Exclude job postings that are only for senior students"
+                                    @change="saveSettings();"></setting>
+                                <setting v-model="settings.NoSWPP" title="No SWPP Positions"
+                                    desc="Exclude job postings that are only for Canadian students"
+                                    @change="saveSettings();"></setting>
+                                <setting v-model="settings.RemoteOnly" title="Remote Only"
+                                    desc="Exclude jobs postings that are not remote." @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.InPersonOnly" title="In-person Only"
+                                    desc="Exclude jobs postings that are remote" @change="saveSettings();"></setting>
+                                <setting v-model="settings.ShortlistOnly" title="Shortlist Only Mode"
+                                    desc="Exclude jobs postings that are not shortlisted" @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.NoShortlist" title="Exclude Shortlist"
+                                    desc="Exclude jobs postings that are shortlisted" @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.BlacklistOnly" title="Blacklist Only Mode"
+                                    desc="Exclude jobs postings that are not blacklisted" @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.NoBlacklist" title="Exclude Blacklist"
+                                    desc="Exclude jobs postings that are blacklisted" @change="saveSettings();">
+                                </setting>
+                                <setting v-model="settings.ApplyToSearch" title="Apply To Search Results"
+                                    desc="Apply filters to search results" @change="saveSettings();"></setting>
+                                <!-- <div v-for="setting in settingsDesc" class="flex flex-row m-2 my-4">
                                     <input type="checkbox" v-model="settings[setting.model]"
                                         class="h-4 w-4 m-4 flex-none" @change="saveSettings();"></input>
                                     <div>
                                         <span class="text-zinc-100">{{setting.title}}</span>
                                         <div class="text-zinc-400">{{setting.desc}}</div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- Useless save button -->
                                 <button
                                     class="ml-12 text-md m-4 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"

@@ -30,68 +30,6 @@ var app = Vue.createApp({
         "degrees": [],
       },
       STATUS: STATUS,
-      settingsDesc: [
-        {
-          "model": "NoExternal",
-          "title": "No External",
-          "desc": "Exclude job postings that require an external application"
-        },
-        {
-          "model": "NoCoverLetters",
-          "title": "No Cover Letters",
-          "desc": "Exclude job postings that require a cover letter"
-        },
-        {
-          "model": "FourMonthOnly",
-          "title": "4 Month Only",
-          "desc": "Exclude job postings that are not 4-month positions"
-        },
-        {
-          "model": "NoSenior",
-          "title": "No Senior Positions",
-          "desc": "Exclude job postings that are only for senior students"
-        },
-        {
-          "model": "NoSWPP",
-          "title": "No SWPP Positions",
-          "desc": "Exclude job postings that are only for Canadian students"
-        },
-        {
-          "model": "RemoteOnly",
-          "title": "Remote Only",
-          "desc": "Exclude jobs postings that are not remote."
-        },
-        {
-          "model": "InPersonOnly",
-          "title": "In-person Only",
-          "desc": "Exclude jobs postings that are remote"
-        },
-        {
-          "model": "ShortlistOnly",
-          "title": "Shortlist Only Mode",
-          "desc": "Exclude jobs postings that are not shortlisted"
-        },
-        {
-          "model": "NoShortlist",
-          "title": "Exclude Shortlist",
-          "desc": "Exclude jobs postings that are shortlisted"
-        },
-        {
-          "model": "BlacklistOnly",
-          "title": "Blacklist Only Mode",
-          "desc": "Exclude jobs postings that are not blacklisted"
-        },
-        {
-          "model": "NoBlacklist",
-          "title": "Exclude Blacklist",
-          "desc": "Exclude jobs postings that are blacklisted"
-        },
-        {
-          "model": "ApplyToSearch",
-          "title": "Apply To Search Results",
-          "desc": "Apply filters to search results"
-        },
-      ]
     }
   },
   computed: {
@@ -172,6 +110,21 @@ var app = Vue.createApp({
           localStorage.setItem('shortlist', JSON.stringify(app.shortlist))
           localStorage.setItem('blacklist', JSON.stringify(app.blacklist))
         },
+      }
+    },
+    setting: {
+      props: ['modelValue', 'desc', 'title'],
+      emits: ['update:modelValue', 'change'],
+      template: '#settingTemplate',
+      computed: {
+        value: {
+          get() {
+            return this.modelValue
+          },
+          set(value) {
+            this.$emit('update:modelValue', value)
+          }
+        }
       }
     }
   }
