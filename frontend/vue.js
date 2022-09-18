@@ -178,7 +178,7 @@ var app = Vue.createApp({
 }).mount('#app')
 
 // Comment out the next line to use local data
-ENDPOINT = new URL(`http://${location.host.split(":")[0]}:3000/`)
+// ENDPOINT = new URL(`http://${location.host.split(":")[0]}:3000/`)
 SKIP_AUTH = true
 
 if (typeof ENDPOINT === 'undefined' || SKIP_AUTH) {
