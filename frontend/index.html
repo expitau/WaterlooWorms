@@ -38,9 +38,9 @@
         </div>
 
         <div class="text-lg text-zinc-200">{{job.id}} - <a target="_blank"
-                :href="`https://duckduckgo.com/?q=%5C${encodeURIComponent(job.Company)}&btnI`">{{job.company}}</a>
+                :href="`https://duckduckgo.com/?q=%5C${encodeURIComponent(job.company)}&btnI`">{{job.company}}</a>
             - <a target="_blank"
-                :href="`https://google.com/maps/search/${encodeURIComponent(job.Company + ', ' + job.Location)}`">{{job.location}}</a>
+                :href="`https://google.com/maps/search/${encodeURIComponent(job.company + ', ' + job.location)}`">{{job.location}}</a>
         </div>
 
         <!-- Pills -->
