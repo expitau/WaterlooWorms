@@ -1,3 +1,20 @@
+function handleJSON(json){
+    for (const [key, value] of Object.entries(json)) {
+        app.postings.push(value)
+    }
+    app.postings.forEach(x => {
+        x.themes.themes.forEach(y => {
+            app.themesAndDegrees.themes.includes(y) || app.themesAndDegrees.themes.push(y)
+        });
+        x.themes.degrees.forEach(y => {
+            app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
+        })
+    })
+    app.themesAndDegrees.themes.sort()
+    app.themesAndDegrees.degrees.sort()
+    app.status = STATUS.READY
+}
+
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING
     if (typeof ENDPOINT === 'undefined') {
@@ -5,22 +22,7 @@ function fetchJSON(password = "") {
             .then(res => {
                 return res.json()
             })
-            .then(json => {
-                for (const [key, value] of Object.entries(json)) {
-                    app.postings.push(new JobPosting(key, value))
-                }
-                app.postings.forEach(x => {
-                    x.TargetedClusters.themes.forEach(y => {
-                        app.themesAndDegrees.themes.includes(y) || app.themesAndDegrees.themes.push(y)
-                    });
-                    x.TargetedClusters.degrees.forEach(y => {
-                        app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
-                    })
-                })
-                app.themesAndDegrees.themes.sort()
-                app.themesAndDegrees.degrees.sort()
-                app.status = STATUS.READY
-            })
+            .then(handleJSON)
     } else {
         ENDPOINT.searchParams.set('pwd', password);
         let xhr = new XMLHttpRequest();
@@ -29,18 +31,7 @@ function fetchJSON(password = "") {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 var json = JSON.parse(xhr.responseText);
-                for (const [key, value] of Object.entries(json)) {
-                    app.postings.push(new JobPosting(key, value))
-                }
-                app.postings.forEach(x => {
-                    x.TargetedClusters.themes.forEach(y => {
-                        app.themesAndDegrees.themes.includes(y) || app.themesAndDegrees.themes.push(y)
-                    });
-                    x.TargetedClusters.degrees.forEach(y => {
-                        app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
-                    })
-                })
-                app.status = STATUS.READY
+                handleJSON(json)
             }
             if (xhr.readyState === 4 && xhr.status === 401) {
                 app.status = STATUS.AUTH_FAILED

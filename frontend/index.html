@@ -7,18 +7,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WaterlooWorks Now</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3X63ZHX75"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3X63ZHX75"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-Y3X63ZHX75');
-    </script>
+    </script> -->
 </head>
+
+<template id="jobPostingTemplate">
+    <div class="flex-none w-full sm:w-1/3 overflow-x-wrap">
+        <div class="flex flex-row">
+            <div class="text-2xl text-zinc-100 w-full sm:w-5/6">{{job.title}}
+            </div>
+            <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" v-if="shortlist.includes(job.id)">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" v-if="blacklist.includes(job.id)">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+
+        <div class="text-lg text-zinc-200">{{job.id}} - <a target="_blank"
+                :href="`https://duckduckgo.com/?q=%5C${encodeURIComponent(job.Company)}&btnI`">{{job.company}}</a>
+            - <a target="_blank"
+                :href="`https://google.com/maps/search/${encodeURIComponent(job.Company + ', ' + job.Location)}`">{{job.location}}</a>
+        </div>
+
+        <!-- Pills -->
+        <div class="flex flex-row flex-wrap">
+            <div v-if="job.special.includes('Remote')"
+                class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                In person
+            </div>
+            <div v-else
+                class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                Remote
+            </div>
+            <div v-if="job.documents.includes('Cover Letter')"
+                class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                Cover letter
+            </div>
+            <div v-if="job.duration.includes('4-month')"
+                class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                4-month
+            </div>
+            <div v-else-if="job.duration.includes('8-month preferred')"
+                class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                8-month preferred
+            </div>
+            <div v-else-if="job.duration.includes('8-month')"
+                class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                8-month
+            </div>
+            <div v-else-if="job.duration.includes('2-term')"
+                class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                Dual-term
+            </div>
+            <div v-if="job.special.includes('External')"
+                class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                External Application
+            </div>
+            <div v-if="job.special.includes('SWPP')"
+                class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                SWPP
+            </div>
+        </div>
+        <!-- Shortlist / blacklist buttons -->
+        <div class="flex flex-row justify-start">
+            <button
+                class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                @click="shortlist.push(job.id);saveLists()"
+                v-if="!shortlist.includes(job.id)">Shortlist</button>
+            <button
+                class="text-md my-3 mx-1 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
+                @click="shortlist.splice(shortlist.indexOf(job.id),1);saveLists()"
+                v-else>Unshortlist</button>
+            <button
+                class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
+                @click="blacklist.push(job.id);saveLists()"
+                v-if="!blacklist.includes(job.id)">Blacklist</button>
+            <button
+                class="text-md my-3 mx-1 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
+                @click="blacklist.splice(blacklist.indexOf(job.id),1);saveLists()"
+                v-else>Unblacklist</button>
+        </div>
+
+        <!-- Tech used -->
+        <div class="mt-5" v-if="job.techs.length > 0">
+            <div class="font-bold">Tech</div>
+            <hr class="w-24 mt-1">
+            <div class="flex flex-row flex-wrap">
+                <div v-for="tech of job.techs" class="mr-2">{{tech}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job description -->
+    <div class="">
+        <div>
+            <div class="font-bold">Summary</div>
+            <div class="block sm:hidden">
+                <div class="whitespace-pre-line max-h-48 truncate"
+                    v-bind:id="'summary-readmore-'+job.id">
+                    {{job.summary}}
+                </div>
+                <button v-bind:id="'summary-readmorebtn-'+job.id" class="text-center m-1"
+                    @click="makeVisible(job.id,'summary')">[ <span
+                        class="underline underline-offset-1 decoration-1">Read more</span>
+                    ]</button>
+            </div>
+            <div class="hidden sm:block whitespace-pre-line">
+                {{job.summary}}
+            </div>
+        </div>
+        <br>
+        <div>
+            <div class="font-bold">Responsibilities</div>
+            <div class="block sm:hidden">
+                <div class="whitespace-pre-line max-h-48 truncate"
+                    v-bind:id="'responsibilities-readmore-'+job.id">
+                    {{job.responsibilities}}
+                </div>
+                <button v-bind:id="'responsibilities-readmorebtn-'+job.id"
+                    class="text-center m-1"
+                    @click="makeVisible(job.id,'responsibilities')">[
+                    <span class="underline underline-offset-1 decoration-1">Read more</span>
+                    ]</button>
+            </div>
+            <div class="hidden sm:block whitespace-pre-line">
+                {{job.responsibilities}}
+            </div>
+        </div>
+        <br>
+        <div>
+            <div class="font-bold">Required Skills</div>
+            <div class="block sm:hidden">
+                <div class="whitespace-pre-line max-h-48 truncate"
+                    v-bind:id="'reqskills-readmore-'+job.id">
+                    {{job.skills}}
+                </div>
+                <button v-bind:id="'reqskills-readmorebtn-'+job.id" class="text-center m-1"
+                    @click="makeVisible(job.id,'reqskills')">[ <span
+                        class="underline underline-offset-1 decoration-1">Read more</span>
+                    ]</button>
+            </div>
+            <div class="hidden sm:block whitespace-pre-line">
+                {{job.skills}}
+            </div>
+        </div>
+        <br>
+        <div>
+            <div v-if="job.compensation" class="font-bold">Compensation & Benefits</div>
+            <div v-if="job.compensation" class="block sm:hidden">
+                <div class="whitespace-pre-line max-h-48 truncate"
+                    v-bind:id="'compensation-readmore-'+job.id">
+                    {{job.compensation}}
+                </div>
+                <button v-bind:id="'compensation-readmorebtn-'+job.id"
+                    class="text-center m-1" @click="makeVisible(job.id,'compensation')">[
+                    <span class="underline underline-offset-1 decoration-1">Read more</span>
+                    ]</button>
+            </div>
+            <div v-if="job.compensation" class="hidden sm:block whitespace-pre-line">
+                {{job.compensation}}
+            </div>
+        </div>
+    </div>
+</template>
 
 <body>
     <div class="bg-zinc-900 w-screen h-screen text-zinc-100 overflow-x-hidden overflow-y-hidden m-0">
@@ -61,7 +226,7 @@
                 <div class="flex flex-row justify-center w-full fixed left-0 top-4 pointer-events-none">
                     <div id="messageToast" class="p-4 bg-blue-600 rounded-md opacity-0"></div>
                 </div>
-                <!-- Navbar -->
+                <!-- Sidebar -->
                 <div
                     class="group bg-zinc-800 flex flex-row md:flex-col items-center md:w-14 md:hover:w-32 h-16 md:h-full flex-none transition-all ease-in-out duration-200 overflow-hidden ">
                     <button class="hover:bg-blue-500 p-4 rounded-md w-full"
@@ -151,167 +316,8 @@
                         <!-- List of jobs -->
                         <div class="flex flex-col space-y-4">
                             <div class="bg-zinc-800 w-full drop-shadow-md rounded-md p-6 flex flex-col sm:flex-row sm:space-x-12"
-                                v-for="job of filteredPostings.slice(25*page,25*page+25)" v-bind:id="job.Id">
-                                <div class="flex-none w-full sm:w-1/3 overflow-x-wrap">
-                                    <div class="flex flex-row">
-                                        <div class="text-2xl text-zinc-100 w-full sm:w-5/6">{{job.Title}}
-                                        </div>
-                                        <svg class="mt-1 ml-2 h-6 w-6 text-blue-500 flex-none" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" v-if="shortlist.includes(job.Id)">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <svg class="mt-1 ml-2 h-6 w-6 text-red-500 flex-none" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" v-if="blacklist.includes(job.Id)">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-
-                                    <div class="text-lg text-zinc-200">{{job.Id}} - <a target="_blank"
-                                            :href="`https://duckduckgo.com/?q=%5C${encodeURIComponent(job.Company)}&btnI`">{{job.Company}}</a>
-                                        - <a target="_blank"
-                                            :href="`https://google.com/maps/search/${encodeURIComponent(job.Company + ', ' + job.Location)}`">{{job.Location}}</a>
-                                    </div>
-
-                                    <!-- Pills -->
-                                    <div class="flex flex-row flex-wrap">
-                                        <div v-if="job.Special.includes('Remote')"
-                                            class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            In person
-                                        </div>
-                                        <div v-else
-                                            class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            Remote
-                                        </div>
-                                        <div v-if="job.Documents.includes('Cover Letter')"
-                                            class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            Cover letter
-                                        </div>
-                                        <div v-if="job.Duration.includes('4-month')"
-                                            class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            4-month
-                                        </div>
-                                        <div v-else-if="job.Duration.includes('8-month preferred')"
-                                            class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            8-month preferred
-                                        </div>
-                                        <div v-else-if="job.Duration.includes('8-month')"
-                                            class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            8-month
-                                        </div>
-                                        <div v-else-if="job.Duration.includes('2-term')"
-                                            class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            Dual-term
-                                        </div>
-                                        <div v-if="job.Special.includes('External')"
-                                            class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            External Application
-                                        </div>
-                                        <div v-if="job.Special.includes('SWPP')"
-                                            class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
-                                            SWPP
-                                        </div>
-                                    </div>
-                                    <!-- Shortlist / blacklist buttons -->
-                                    <button
-                                        class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
-                                        @click="shortlist.push(job.Id);saveLists()"
-                                        v-if="!shortlist.includes(job.Id)">Shortlist</button>
-                                    <button
-                                        class="mx-auto text-md m-3 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
-                                        @click="shortlist.splice(shortlist.indexOf(job.Id),1);saveLists()"
-                                        v-else>Unshortlist</button>
-                                    <button
-                                        class="mx-auto text-md m-3 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
-                                        @click="blacklist.push(job.Id);saveLists()"
-                                        v-if="!blacklist.includes(job.Id)">Blacklist</button>
-                                    <button
-                                        class="mx-auto text-md m-3 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
-                                        @click="blacklist.splice(blacklist.indexOf(job.Id),1);saveLists()"
-                                        v-else>Unblacklist</button>
-
-                                    <!-- Tech used -->
-                                    <div class="mt-5" v-if="job.Skills.length > 0">
-                                        <div class="font-bold">Tech</div>
-                                        <hr class="w-24 mt-1">
-                                        <div class="flex flex-row flex-wrap">
-                                            <div v-for="tech of job.Skills" class="mr-2">{{tech}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Job description -->
-                                <div class="">
-                                    <div>
-                                        <div class="font-bold">Summary</div>
-                                        <div class="block sm:hidden">
-                                            <div class="whitespace-pre-line max-h-48 truncate"
-                                                v-bind:id="'summary-readmore-'+job.Id">
-                                                {{job.Summary}}
-                                            </div>
-                                            <button v-bind:id="'summary-readmorebtn-'+job.Id" class="text-center m-1"
-                                                @click="makeVisible(job.Id,'summary')">[ <span
-                                                    class="underline underline-offset-1 decoration-1">Read more</span>
-                                                ]</button>
-                                        </div>
-                                        <div class="hidden sm:block whitespace-pre-line">
-                                            {{job.Summary}}
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div>
-                                        <div class="font-bold">Responsibilities</div>
-                                        <div class="block sm:hidden">
-                                            <div class="whitespace-pre-line max-h-48 truncate"
-                                                v-bind:id="'responsibilities-readmore-'+job.Id">
-                                                {{job.Responsibilities}}
-                                            </div>
-                                            <button v-bind:id="'responsibilities-readmorebtn-'+job.Id"
-                                                class="text-center m-1"
-                                                @click="makeVisible(job.Id,'responsibilities')">[
-                                                <span class="underline underline-offset-1 decoration-1">Read more</span>
-                                                ]</button>
-                                        </div>
-                                        <div class="hidden sm:block whitespace-pre-line">
-                                            {{job.Responsibilities}}
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div>
-                                        <div class="font-bold">Required Skills</div>
-                                        <div class="block sm:hidden">
-                                            <div class="whitespace-pre-line max-h-48 truncate"
-                                                v-bind:id="'reqskills-readmore-'+job.Id">
-                                                {{job.ReqSkills}}
-                                            </div>
-                                            <button v-bind:id="'reqskills-readmorebtn-'+job.Id" class="text-center m-1"
-                                                @click="makeVisible(job.Id,'reqskills')">[ <span
-                                                    class="underline underline-offset-1 decoration-1">Read more</span>
-                                                ]</button>
-                                        </div>
-                                        <div class="hidden sm:block whitespace-pre-line">
-                                            {{job.ReqSkills}}
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div>
-                                        <div v-if="job.Compensation" class="font-bold">Compensation & Benefits</div>
-                                        <div v-if="job.Compensation" class="block sm:hidden">
-                                            <div class="whitespace-pre-line max-h-48 truncate"
-                                                v-bind:id="'compensation-readmore-'+job.Id">
-                                                {{job.Compensation}}
-                                            </div>
-                                            <button v-bind:id="'compensation-readmorebtn-'+job.Id"
-                                                class="text-center m-1" @click="makeVisible(job.Id,'compensation')">[
-                                                <span class="underline underline-offset-1 decoration-1">Read more</span>
-                                                ]</button>
-                                        </div>
-                                        <div v-if="job.Compensation" class="hidden sm:block whitespace-pre-line">
-                                            {{job.Compensation}}
-                                        </div>
-                                    </div>
-                                </div>
+                                v-for="job of filteredPostings.slice(25*page,25*page+25)" v-bind:id="job.id">
+                                <jobPosting :job="job" :shortlist="shortlist" :blacklist="blacklist"></jobPosting>
                             </div>
                         </div>
                         <div class="flex flex-row justify-center w-full">
@@ -434,7 +440,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Export modal -->
                     <div v-if="panel == 'export'">
                         <!-- Title -->
@@ -489,13 +494,8 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
 </body>
-<script src="./functions/status.js"></script>
-<script src="./functions/jobposting.js"></script>
 <script src="./functions/fetch.js"></script>
-<script src="./functions/tech.js"></script>
 <script src="vue.js"></script>
 
 </html>
