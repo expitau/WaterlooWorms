@@ -69,7 +69,7 @@ var app = Vue.createApp({
     },
     resetSettings: () => {
       app.settings = {
-        version: 1.1,
+        version: settingsVersion,
         themes: {},
         degrees: {},
         NoExternal: true,
@@ -146,53 +146,6 @@ localStorage.setItem("settings", JSON.stringify(app.settings))
 
 // Returns postings that match the set filters
 function getCleaned(postings) {
-
-  // Filters title to only match software and math jobs
-  function filterTitle(title) {
-    excludes = ["ios"]
-    matches = ["software", "develop", "ui\\b", "\\bux\\b", "full.?stack", "back.?end", "front.?end", "programmer", "data", "machine", "linux", "\\bit\\b", "network", "qa\\b", "tutor", "game"]
-    // matches = ["game"]
-    for (const e of excludes) {
-      if ((new RegExp(e, "gi")).test(title)) {
-        return false
-      }
-    }
-    for (const m of matches) {
-      if ((new RegExp(m, "gi")).test(title)) {
-        return true
-      }
-    }
-    return false
-  }
-
-  function themesAndDegreesActive() {
-    for ([theme, val] of Object.entries(app.settings.themes)) {
-      if (val) {
-        return true
-      }
-    }
-    for ([degree, val] of Object.entries(app.settings.degrees)) {
-      if (val) {
-        return true
-      }
-    }
-    return false;
-  }
-
-  function matchesThemesAndDegrees(x) {
-    for (theme of x.themes.themes) {
-      if (app.settings.themes[theme]) {
-        return true;
-      }
-    }
-    for (degree of x.themes.degrees) {
-      if (app.settings.degrees[degree]) {
-        return true;
-      }
-    }
-    return false
-  }
-
   // Apply filters
   [
     [app.settings.NoExternal,
@@ -203,9 +156,6 @@ function getCleaned(postings) {
 
     [app.settings.FourMonthOnly,
     x => x.duration.includes("4-month")],
-
-    [app.settings.CSOnly,
-    x => filterTitle(x.title)],
 
     [app.settings.NoSenior,
     x => !x.level[0].includes("Senior")],
@@ -231,8 +181,8 @@ function getCleaned(postings) {
     [app.settings.NoBlacklist,
     x => !app.blacklist.includes(x.id)],
 
-    [themesAndDegreesActive(),
-    x => matchesThemesAndDegrees(x)]
+    [Object.values(app.settings.themes).some(x => x) || Object.values(app.settings.degrees).some(x => x),
+    x => x.themes.themes.some(theme => app.settings.themes[theme]) || x.themes.degrees.some(degree => app.settings.degrees[degree])]
 
   ].forEach((x) => { x[0] && (() => { postings = postings.filter(x[1]) })() });
 
