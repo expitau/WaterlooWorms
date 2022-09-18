@@ -9,6 +9,15 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3X63ZHX75"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y3X63ZHX75');
+    </script>
 </head>
 
 <body>
@@ -49,6 +58,10 @@
 
             <!-- Main page -->
             <div id="body" class="grow flex flex-col md:flex-row overflow-y-hidden" v-else>
+                <div class="flex flex-row justify-center w-full fixed left-0 top-4 pointer-events-none">
+                    <div id="messageToast" class="p-4 bg-blue-600 rounded-md opacity-0"></div>
+                </div>
+                <!-- Navbar -->
                 <div
                     class="group bg-zinc-800 flex flex-row md:flex-col items-center md:w-14 md:hover:w-32 h-16 md:h-full flex-none transition-all ease-in-out duration-200 overflow-hidden ">
                     <button class="hover:bg-blue-500 p-4 rounded-md w-full"
@@ -96,16 +109,25 @@
                         </div>
                     </button>
                 </div>
-                <div class="h-full p-8 overflow-y-auto w-full">
+                <div id="homepage" class="h-full p-1 sm:p-8 overflow-y-auto w-full">
                     <div class="flex flex-col" v-if="panel=='home'">
+                        <div onClick="document.getElementById('homepage').scrollTop = 0"
+                            class="bg-blue-600 hover:bg-blue-500 cursor-pointer flex items-center justify-center drop-shadow-lg w-10 h-10 rounded-lg absolute right-6 bottom-2 z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+                            </svg>
+                        </div>
                         <div
                             class="flex flex-col justify-between w-full sm:flex-row text-center sm:text-left mt-2 sm:mt-0">
                             <div class="m-2 mt-0 flex-none">Found {{filteredPostings.length}} of {{postings.length}}
                                 jobs
-                                (showing 1-25)</div>
+                                (showing {{page * 25 + 1}}-{{page * 25 + 25}})</div>
                             <div class="flex-grow"></div>
                             <div class="m-2 mt-0 flex-none flex flex-row mx-auto sm:mx-2">
-                                <button class="text-zinc-100" @click="page = Math.max(page-1, 0)">
+                                <button class="text-zinc-100" @click="page = Math.max(page-1, 0)"
+                                    onClick="document.getElementById('homepage').scrollTop = 0">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -115,7 +137,8 @@
                                 <div class="text-zinc-100">{{page+1}} of {{Math.ceil(filteredPostings.length / 25)}}
                                 </div>
                                 <button class="text-zinc-100"
-                                    @click="page = Math.min(page+1, Math.ceil(filteredPostings.length / 25) - 1)">
+                                    @click="page = Math.min(page+1, Math.ceil(filteredPostings.length / 25) - 1)"
+                                    onClick="document.getElementById('homepage').scrollTop = 0">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -145,8 +168,12 @@
                                         </svg>
                                     </div>
 
-                                    <div class="text-lg text-zinc-200">{{job.Id}} - {{job.Company}} - {{job.Location}}
+                                    <div class="text-lg text-zinc-200">{{job.Id}} - <a target="_blank"
+                                            :href="`https://duckduckgo.com/?q=%5C${encodeURIComponent(job.Company)}&btnI`">{{job.Company}}</a>
+                                        - <a target="_blank"
+                                            :href="`https://google.com/maps/search/${encodeURIComponent(job.Company + ', ' + job.Location)}`">{{job.Location}}</a>
                                     </div>
+
                                     <!-- Pills -->
                                     <div class="flex flex-row flex-wrap">
                                         <div v-if="job.Special.includes('Remote')"
@@ -289,7 +316,8 @@
                         </div>
                         <div class="flex flex-row justify-center w-full">
                             <div class="m-2 mt-0 flex-none flex flex-row mx-auto sm:mx-2">
-                                <button class="text-zinc-100" @click="page = Math.max(page-1, 0)">
+                                <button class="text-zinc-100" @click="page = Math.max(page-1, 0)"
+                                    onClick="document.getElementById('homepage').scrollTop = 0">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -299,7 +327,8 @@
                                 <div class="text-zinc-100">{{page+1}} of {{Math.ceil(filteredPostings.length / 25)}}
                                 </div>
                                 <button class="text-zinc-100"
-                                    @click="page = Math.min(page+1, Math.ceil(filteredPostings.length / 25) - 1)">
+                                    @click="page = Math.min(page+1, Math.ceil(filteredPostings.length / 25) - 1)"
+                                    onClick="document.getElementById('homepage').scrollTop = 0">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -397,11 +426,11 @@
                                 <!-- Useless save button -->
                                 <button
                                     class="ml-12 text-md m-4 bg-blue-600 p-2 rounded-md drop-shadow-md hover:bg-blue-500"
-                                    @click="">Save Settings</button>
+                                    @click="showMessage('Saved!')">Save Settings</button>
                                 <!-- Reset button -->
                                 <button
                                     class="ml-12 text-md m-4 bg-zinc-600 p-2 rounded-md drop-shadow-md hover:bg-zinc-500"
-                                    @click="resetSettings()">Reset Defaults</button>
+                                    @click="resetSettings(); showMessage('Settings reset.')">Reset Defaults</button>
                             </div>
                         </div>
                     </div>
@@ -412,9 +441,39 @@
                         <div class="text-xl text-center py-4">Export</div>
                         <!-- Export pane -->
                         <div class="mx-auto p-6 bg-zinc-800 rounded-md h-2/3" style="font-family: monospace;">
-                            <div class="w-full h-full whitespace-pre-wrap overflow-y-auto">
-                                <div>SHORTLIST: <span v-for="item in shortlist"><button class="hover:bg-zinc-500 rounded" @click="shortlist = shortlist.filter(x => x != item)">{{item}}</button>, </span></div>
-                                <div>BLACKLIST: <span v-for="item in blacklist"><button class="hover:bg-zinc-500 rounded" @click="blacklist = blacklist.filter(x => x != item)">{{item}}</button>, </span></div>
+                            <div class="w-full h-full flex flex-col overflow-y-auto gap-4">
+                                <div class="flex flex-row">
+                                    <button
+                                        @click="copyText(shortlist.join(', ')); showMessage('Copied to clipboard!')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="w-5 h-5">
+                                            <path
+                                                d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" />
+                                            <path
+                                                d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z" />
+                                        </svg></button>&nbsp
+                                    SHORTLIST:&nbsp
+                                    <span v-for="item in shortlist">
+                                        <button class="hover:bg-zinc-500 rounded"
+                                            @click="shortlist = shortlist.filter(x => x != item)">{{item}}</button>,&nbsp
+                                    </span>
+                                </div>
+                                <div class="flex flex-row">
+                                    <button
+                                        @click="copyText(shortlist.join(', ')); showMessage('Copied to clipboard!')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="w-5 h-5">
+                                            <path
+                                                d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" />
+                                            <path
+                                                d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z" />
+                                        </svg></button>&nbsp
+                                    BLACKLIST:&nbsp
+                                    <span v-for="item in blacklist">
+                                        <button class="hover:bg-zinc-500 rounded"
+                                            @click="blacklist = blacklist.filter(x => x != item)">{{item}}</button>,&nbsp
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

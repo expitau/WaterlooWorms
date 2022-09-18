@@ -7,7 +7,7 @@ var app = new Vue({
     postings: [],
     password: "",
     passwordVisible: false,
-    panel: 'export',
+    panel: 'home',
     status: STATUS.AUTHENTICATING,
     settings: JSON.parse(localStorage.getItem("settings")),
     shortlist: JSON.parse(localStorage.getItem("shortlist")) ?? [],
@@ -142,6 +142,15 @@ var app = new Vue({
     saveLists: () => {
       localStorage.setItem('shortlist', JSON.stringify(app.shortlist))
       localStorage.setItem('blacklist', JSON.stringify(app.blacklist))
+    },
+    copyText: (text) => {
+      navigator.clipboard.writeText(text)
+    },
+    showMessage: (message) => {
+      let el = document.getElementById('messageToast')
+      el.innerHTML = message
+      el.classList.remove('fade-in-out')
+      window.requestAnimationFrame(() => {el.classList.add('fade-in-out')})
     }
   }
 })

@@ -1,14 +1,9 @@
-.bg-blue-600 {
+/* .bg-blue-600 {
     background-color: rgb(130, 113, 226);
 }
 .text-blue-500 {
     color: rgb(130, 113, 226);
-}
-
-.bg-blue-500 :hover {
-    background-color: rgb(192, 0, 80) !important;
-
-}
+} */
 
 ::-webkit-scrollbar { 
     width: 16px; 
@@ -22,4 +17,15 @@
 } 
 ::-webkit-scrollbar-thumb:hover { 
     background: #7B7B7B;
+}
+
+.fade-in-out {
+    opacity: 0;
+    animation: fade 3s linear;
+}
+
+
+@keyframes fade {
+  0%,100% { opacity: 0 }
+  5%,85% { opacity: 1 }
 }
