@@ -499,7 +499,7 @@
                         <!-- Export pane -->
                         <div class="mx-auto p-6 bg-zinc-800 rounded-md h-2/3" style="font-family: monospace;">
                             <div class="w-full h-full flex flex-col overflow-y-auto gap-4">
-                                <div class="flex flex-row">
+                                <div class="flex flex-row flex-wrap">
                                     <button
                                         @click="copyText(shortlist.join(', ')); showMessage('Copied to clipboard!')"><svg
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -510,12 +510,12 @@
                                                 d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z" />
                                         </svg></button>&nbsp
                                     SHORTLIST:&nbsp
-                                    <span v-for="item in shortlist">
+                                    <span v-for="item in shortlist" class="whitespace-nowrap">
                                         <button class="hover:bg-zinc-500 rounded"
                                             @click="shortlist = shortlist.filter(x => x != item)">{{item}}</button>,&nbsp
                                     </span>
                                 </div>
-                                <div class="flex flex-row">
+                                <div class="flex flex-row flex-wrap">
                                     <button
                                         @click="copyText(shortlist.join(', ')); showMessage('Copied to clipboard!')"><svg
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -526,7 +526,7 @@
                                                 d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z" />
                                         </svg></button>&nbsp
                                     BLACKLIST:&nbsp
-                                    <span v-for="item in blacklist">
+                                    <span v-for="item in blacklist" class="whitespace-nowrap">
                                         <button class="hover:bg-zinc-500 rounded"
                                             @click="blacklist = blacklist.filter(x => x != item)">{{item}}</button>,&nbsp
                                     </span>
