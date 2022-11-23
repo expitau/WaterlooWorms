@@ -1,4 +1,4 @@
- ### Data last updated for Cycle 2 Posting 1 of W22
+ ### Data last updated for Cycle 4 Continuous W22
 # Waterloo Works Sucks
 ...so I made it better. This application uses scraped data off of Waterloo Works (A job application site) to provide a more user-friendly experience that allows for real-time search, filtering, saving/exporting, and the ability to see job descriptions without navigating to another page (which you think would be a given, but apparently not).
 
