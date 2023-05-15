@@ -8,17 +8,18 @@ function handleJSON(json){
         });
         x.themes.degrees.forEach(y => {
             app.themesAndDegrees.degrees.includes(y) || app.themesAndDegrees.degrees.push(y)
-        })
+        });
     })
     app.themesAndDegrees.themes.sort()
     app.themesAndDegrees.degrees.sort()
+    console.log(app.postings.length + " postings loaded")
     app.status = STATUS.READY
 }
 
 function fetchJSON(password = "") {
     app.status = STATUS.LOADING
     if (typeof ENDPOINT === 'undefined') {
-        fetch("https://expitau-dev.github.io/WaterlooWorksNow/frontend/data/wwdata.json")
+        fetch("data/wwdata.json")
             .then(res => {
                 return res.json()
             })
