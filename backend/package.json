@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "scrape": "npm exec concurrently \"npm start\" \"node scraper.js\"",
+    "start": "node server.js",
+    "clean": "node clean.js"
+  },
+  "dependencies": {
+    "concurrently": "^7.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.17.2",
+    "puppeteer": "^17.1.2"
+  }
+}
