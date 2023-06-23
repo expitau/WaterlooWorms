@@ -22,7 +22,7 @@ echo "{}" >> data/wwdata.raw.json
 
 npm run scrape
 npm run clean
-cp data/wwdata.raw.json ../frontend/data/wwdata.json
+cp data/wwdata.cleaned.json ../frontend/data/wwdata.json
 ```
 
 | Vue | Tailwind | Docker | REST APIs | Javascript | Node | Express
