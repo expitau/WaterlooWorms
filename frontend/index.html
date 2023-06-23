@@ -68,7 +68,7 @@
 
             <!-- Pills -->
             <div class="flex flex-row flex-wrap">
-                <div v-if="job.special.includes('Remote')"
+                <div v-if="!job.special.includes('Remote')"
                     class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     In person
                 </div>
