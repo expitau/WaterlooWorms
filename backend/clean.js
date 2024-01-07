@@ -21,6 +21,10 @@ for (id in obj) {
     posting = obj[id]
     formattedPosting = {}
 
+    if (Object.keys(formattedPosting) == 0)
+        continue
+
+
     formattedPosting.id = id
     formattedPosting.title = posting["Job Posting Information"]["Job Title:"]
     formattedPosting.company = posting["Company Info"] ? posting["Company Info"]["Organization:"] : posting["Company Information"]["Organization:"]
@@ -55,10 +59,10 @@ for (id in obj) {
             "themes": arr.filter(x => x.startsWith("- Theme")).map(x => x.replace("- Theme -", "")),
             "degrees": arr.filter(x => !x.startsWith("- Theme"))
         }))(posting["Job Posting Information"]["Targeted Degrees and Disciplines:"].split(/\s*\n\t+\s*/).slice(1))
-        
-        obj[id] = formattedPosting
-    }
-    
+
+    obj[id] = formattedPosting
+}
+
 function extractText(text, extract) {
     let out = []
     for (const [key, value] of Object.entries(extract)) {
@@ -71,8 +75,8 @@ function extractText(text, extract) {
 
 /****** Pruning phase *******/
 
-SHORTLIST.forEach((x) => {delete obj[x]})
+SHORTLIST.forEach((x) => { delete obj[x] })
 
 /****** Minifying phase *******/
 
-fs.writeFileSync(outputFile,JSON.stringify(obj, null, ' '))
+fs.writeFileSync(outputFile, JSON.stringify(obj, null, ' '))

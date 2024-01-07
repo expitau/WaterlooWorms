@@ -26,6 +26,7 @@ let currentPage = 1;
     await page.waitForSelector('#passwordInput')
     await page.type('#passwordInput', process.env.WW_PASSWORD)
     await clickButton('Sign in', 'span')
+    await (await page.waitForSelector('#trust-browser-button')).click()
     // Duo push happens here
     await (await page.waitForSelector(`[aria-label="Toggle Main Menu"]`)).click()
     await clickButton('Hire Waterloo Co-op')
