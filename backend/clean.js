@@ -16,18 +16,20 @@ let techs = [".net", "agile", "airflow", "ajax", "android", "angular", "angular(
 let techdesc = { "c(?![\\#\\+])": "c", "c\\+\\+": "c++", "java(?!script)": "java", "angular(js)?": "angular" }
 let techsobj = {}
 techs.forEach((key, i) => techsobj[techdesc[techs[i]] ?? techs[i]] = "(\\b|\\,|\\s|\\\\|\\/|\\()" + techs[i] + "(\\b|\\,|\\s|\\\\|\\/|\\))");
+let newpostings = {}
 
 for (id in obj) {
     posting = obj[id]
     formattedPosting = {}
 
-    if (Object.keys(formattedPosting) == 0)
+    if (Object.keys(posting) == 0)
         continue
 
 
     formattedPosting.id = id
     formattedPosting.title = posting["Job Posting Information"]["Job Title:"]
-    formattedPosting.company = posting["Company Info"] ? posting["Company Info"]["Organization:"] : posting["Company Information"]["Organization:"]
+    companyInfo = posting["Company Info"] ? posting["Company Info"] : posting["Company Information"]
+    formattedPosting.company = companyInfo ? companyInfo["Organization:"] : ""
     formattedPosting.location = posting["Job Posting Information"]["Job - City:"]
     formattedPosting.openings = +posting["Job Posting Information"]["Number of Job Openings:"]
     formattedPosting.term = posting["Job Posting Information"]["Work Term:"]
@@ -43,11 +45,11 @@ for (id in obj) {
         "Remote": "remote",
         "SWPP": "SWPP",
     })
-    formattedPosting.documents = extractText(posting["Application Information"]["Application Documents Required:"], {
+    formattedPosting.documents = posting["Application Information"] ? extractText(posting["Application Information"]["Application Documents Required:"], {
         "Resume": "Résumé",
         "Grade": "Grades Report",
         "Cover Letter": "Cover Letter"
-    })
+    }) : []
     formattedPosting.techs = extractText(posting["Job Posting Information"]["Required Skills:"], techsobj)
     formattedPosting.level = extractText(posting["Job Posting Information"]["Level:"], { "Junior": "Junior", "Intermediate": "Intermediate", "Senior": "Senior" })
     formattedPosting.summary = posting["Job Posting Information"]["Job Summary:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
@@ -60,7 +62,7 @@ for (id in obj) {
             "degrees": arr.filter(x => !x.startsWith("- Theme"))
         }))(posting["Job Posting Information"]["Targeted Degrees and Disciplines:"].split(/\s*\n\t+\s*/).slice(1))
 
-    obj[id] = formattedPosting
+    newpostings[id] = formattedPosting
 }
 
 function extractText(text, extract) {
@@ -75,8 +77,8 @@ function extractText(text, extract) {
 
 /****** Pruning phase *******/
 
-SHORTLIST.forEach((x) => { delete obj[x] })
+// SHORTLIST.forEach((x) => { delete newpostings[x] })
 
 /****** Minifying phase *******/
 
-fs.writeFileSync(outputFile, JSON.stringify(obj, null, ' '))
+fs.writeFileSync(outputFile, JSON.stringify(newpostings, null, ' '))
