@@ -198,7 +198,7 @@ function getCleaned(postings) {
 
     // names must be equal
     return 0;
-  }
+  })
 }
 
 // Get postings that match search results
