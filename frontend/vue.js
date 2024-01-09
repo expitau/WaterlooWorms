@@ -186,7 +186,19 @@ function getCleaned(postings) {
 
   ].forEach((x) => { x[0] && (() => { postings = postings.filter(x[1]) })() });
 
-  return postings
+  return postings.sort((a, b) => {
+    const A = a.company.toUpperCase(); // ignore upper and lowercase
+    const B = b.company.toUpperCase(); // ignore upper and lowercase
+    if (A < B) {
+      return -1;
+    }
+    if (A > B) {
+      return 1;
+    }
+
+    // names must be equal
+    return 0;
+  }
 }
 
 // Get postings that match search results
