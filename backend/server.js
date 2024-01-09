@@ -40,6 +40,16 @@ app.post('/', (req, res) => {
     res.json("Success");
 })
 
+app.post('/delete', (req, res) => {
+    if (authenticate(req, res)) return
+
+    let ids = req.body
+
+    var filecontents = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
+    fs.writeFileSync(filepath, JSON.stringify(Object.fromEntries(Object.entries(filecontents).filter(x => ids.includes(x[0])))), null, '\t')
+    console.log(`Deleted ${Object.keys(filecontents).filter(x => !ids.includes(x))}`)
+})
+
 app.get('/', (req, res) => {
     console.log(`A get request was made from ${req.header('x-forwarded-for') || req.connection.remoteAddress}`)
     if (authenticate(req, res)) return

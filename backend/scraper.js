@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs')
+const fetch = require('node-fetch')
 require('dotenv').config()
 
 let filepath = process.env.API_DATA_PATH
@@ -7,6 +8,7 @@ let existingKeys = Object.keys(JSON.parse(fs.readFileSync(filepath, 'utf8')));
 
 let foundKeys = [];
 let currentPage = 1;
+let preparingToExit = false
 
 ; (async () => {
     // const browser = await puppeteer.launch({ headless: false, slowMo: 25 });
@@ -41,10 +43,10 @@ let currentPage = 1;
             await page2.waitForSelector("#postingDiv");
             // await new Promise(r => setTimeout(r, 3000));
             function save() {
-                function postJSON(data) {
+                function postJSON(data, path='/') {
                     let url = "http://localhost:3000";
                     let xhr = new XMLHttpRequest();
-                    xhr.open("POST", url, true);
+                    xhr.open("POST", url + path, true);
                     xhr.setRequestHeader("Content-Type", "application/json");
                     xhr.onreadystatechange = function () {
                         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -86,9 +88,20 @@ let currentPage = 1;
         await button.evaluate(b => b.click());
         await new Promise(r => setTimeout(r, 2000));
         currentPage = await page.evaluate(() => { return document.querySelector("div.pagination ul li.active a").innerHTML.trim() })
-        if (lastPage == currentPage){
+        if (lastPage == currentPage && preparingToExit){
             console.log(JSON.stringify(existingKeys.filter(x => !foundKeys.includes(x))))
+            await fetch('http://localhost:3000/delete', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                  // Add any additional headers as needed
+                },
+                body: JSON.stringify(foundKeys)
+              })
             return
+        } else if (lastPage == currentPage) {
+            preparingToExit = true
+            console.log("Preparing to exit...")
         } else {
             console.log(`Select page -- ${currentPage}`)
         }
