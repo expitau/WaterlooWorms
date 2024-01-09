@@ -164,10 +164,10 @@ function getCleaned(postings) {
     x => !x.special.includes("SWPP")],
 
     [app.settings.InPersonOnly,
-    x => !x.special.includes("Remote")],
+    x => !x.remote.includes("Remote")],
 
     [app.settings.RemoteOnly,
-    x => x.special.includes("Remote")],
+    x => !x.remote.includes("In-person")],
 
     [app.settings.ShortlistOnly,
     x => app.shortlist.includes(x.id)],

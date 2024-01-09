@@ -68,12 +68,18 @@
 
             <!-- Pills -->
             <div class="flex flex-row flex-wrap">
-                <div v-if="!job.special.includes('Remote')"
+                <div v-if="job.remote.includes('In-person')"
                     class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     In person
                 </div>
-                <div v-else class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                <div v-else-if="job.remote.includes('Hybrid')" class="whitespace-nowrap bg-orange-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                    Hybrid
+                </div>
+                <div v-else-if="job.remote.includes('Remote')" class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     Remote
+                </div>
+                <div v-else class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                    Unknown
                 </div>
                 <div v-if="job.documents.includes('Cover Letter')"
                     class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">

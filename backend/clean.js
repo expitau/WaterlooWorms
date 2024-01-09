@@ -45,6 +45,9 @@ for (id in obj) {
         "Remote": "remote",
         "SWPP": "SWPP",
     })
+    formattedPosting.remote = posting["Job Posting Information"]["Employment Location Arrangement:"]
+    if (!['Remote', 'Hybrid', 'In-person'].includes(formattedPosting.remote))
+        formattedPosting.remote = "Unknown"
     formattedPosting.documents = posting["Application Information"] ? extractText(posting["Application Information"]["Application Documents Required:"], {
         "Resume": "Résumé",
         "Grade": "Grades Report",
