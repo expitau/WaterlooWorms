@@ -63,7 +63,7 @@ for (id in obj) {
         {
             "themes": arr.filter(x => x.startsWith("- Theme")).map(x => x.replace("- Theme -", "")),
             "degrees": arr.filter(x => !x.startsWith("- Theme"))
-        }))(posting["Job Posting Information"]["Targeted Degrees and Disciplines:"].split(/\s*\n\t+\s*/).slice(1))
+        }))(posting["Job Posting Information"]["Targeted Degrees and Disciplines:"] ? posting["Job Posting Information"]["Targeted Degrees and Disciplines:"].split(/\s*\n\t+\s*/).slice(1) : [])
 
     newpostings[id] = formattedPosting
 }
