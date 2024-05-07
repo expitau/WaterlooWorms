@@ -62,7 +62,7 @@ for (let id in obj) {
     formattedPosting.summary = posting["Job Posting Information"]["Job Summary:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
     formattedPosting.responsibilities = posting["Job Posting Information"]["Job Responsibilities:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
     formattedPosting.skills = posting["Job Posting Information"]["Required Skills:"].replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
-    formattedPosting.compensation = posting["Job Posting Information"]["Compensation and Benefits Information:"]?.replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
+    formattedPosting.compensation = posting["Job Posting Information"]["Compensation and Benefits:"]?.replaceAll(" ", "").replaceAll(/\n[\n\s]+/gi, "\n");
     formattedPosting.themes = ((arr) => (
         {
             "themes": arr.filter(x => x.startsWith("- Theme")).map(x => x.replace("- Theme -", "")),
