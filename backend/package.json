@@ -1,8 +1,9 @@
 {
+  "type": "module",
   "scripts": {
-    "scrape": "npm exec concurrently \"npm start\" \"node scraper.js\"",
-    "start": "node server.js",
-    "clean": "node clean.js"
+    "scrape": "node scraper.mjs",
+    "start": "node server.mjs",
+    "clean": "node clean.mjs"
   },
   "dependencies": {
     "concurrently": "^7.4.0",

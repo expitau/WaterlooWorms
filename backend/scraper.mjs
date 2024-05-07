@@ -1,18 +1,19 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs')
-const fetch = require('node-fetch')
-require('dotenv').config()
+import puppeteer from 'puppeteer';
+import fs from 'fs';
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+dotenv.config();
 
 let filepath = process.env.API_DATA_PATH
 let existingKeys = Object.keys(JSON.parse(fs.readFileSync(filepath, 'utf8')));
 
 let foundKeys = [];
 let currentPage = 1;
-let preparingToExit = false
+let preparingToExit = false;
 
-; (async () => {
-    // const browser = await puppeteer.launch({ headless: false, slowMo: 25 });
-    const browser = await puppeteer.launch();
+(async () => {
+    const browser = await puppeteer.launch({ headless: false, slowMo: 25 });
+    // const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto('https://waterlooworks.uwaterloo.ca/notLoggedIn.htm');
     async function clickButton(text, type = 'a') {
@@ -28,11 +29,17 @@ let preparingToExit = false
     await page.waitForSelector('#passwordInput')
     await page.type('#passwordInput', process.env.WW_PASSWORD)
     await clickButton('Sign in', 'span')
-    await (await page.waitForSelector('#trust-browser-button')).click()
     // Duo push happens here
+    await page.waitForSelector(".verification-code")
+    console.log("Duo code: " + await page.evaluate(() => {
+        const element = document.querySelector(".verification-code")
+        return element ? element.textContent : 'not found';
+    }))
+    await (await page.waitForSelector('#trust-browser-button')).click()
+    console.log("Success!")
     await (await page.waitForSelector(`[aria-label="Toggle Main Menu"]`)).click()
-    await clickButton('Hire Waterloo Co-op')
-    // await clickButton('Other Jobs')
+    await clickButton('Co-op Jobs')
+    await clickButton('View jobs')
     await (await page.waitForSelector(`[value="Search"]`)).click()
     while (true) {
         async function saveLink(link) {
@@ -43,7 +50,7 @@ let preparingToExit = false
             await page2.waitForSelector("#postingDiv");
             // await new Promise(r => setTimeout(r, 3000));
             function save() {
-                function postJSON(data, path='/') {
+                function postJSON(data, path = '/') {
                     let url = "http://localhost:3000";
                     let xhr = new XMLHttpRequest();
                     xhr.open("POST", url + path, true);
@@ -77,7 +84,7 @@ let preparingToExit = false
         await page.waitForSelector('tr td.orgDivTitleMaxWidth a')
         let linkIds = await page.evaluate(() => { return Array.from(document.querySelectorAll('tr td.orgDivTitleMaxWidth a')).map(link => link.closest('tr').children[2].innerHTML) })
         let links = await page.$$('tr td.orgDivTitleMaxWidth a')
-        for (i in links) {
+        for (let i in links) {
             foundKeys.push(linkIds[i])
             if (!existingKeys.includes(linkIds[i])) {
                 await saveLink(links[i])
@@ -88,16 +95,16 @@ let preparingToExit = false
         await button.evaluate(b => b.click());
         await new Promise(r => setTimeout(r, 2000));
         currentPage = await page.evaluate(() => { return document.querySelector("div.pagination ul li.active a").innerHTML.trim() })
-        if (lastPage == currentPage && preparingToExit){
+        if (lastPage == currentPage && preparingToExit) {
             console.log(JSON.stringify(existingKeys.filter(x => !foundKeys.includes(x))))
             await fetch('http://localhost:3000/delete', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json'
-                  // Add any additional headers as needed
+                    'Content-Type': 'application/json'
+                    // Add any additional headers as needed
                 },
                 body: JSON.stringify(foundKeys)
-              })
+            })
             return
         } else if (lastPage == currentPage) {
             preparingToExit = true

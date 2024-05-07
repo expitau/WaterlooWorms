@@ -1,6 +1,7 @@
-require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config()
 
-const fs = require('fs')
+import fs from 'fs'
 
 let SHORTLIST = []
 let EXISTING = []
@@ -18,17 +19,20 @@ let techsobj = {}
 techs.forEach((key, i) => techsobj[techdesc[techs[i]] ?? techs[i]] = "(\\b|\\,|\\s|\\\\|\\/|\\()" + techs[i] + "(\\b|\\,|\\s|\\\\|\\/|\\))");
 let newpostings = {}
 
-for (id in obj) {
-    posting = obj[id]
-    formattedPosting = {}
+for (let id in obj) {
+    let posting = obj[id]
+    let formattedPosting = {}
 
     if (Object.keys(posting) == 0)
+        continue
+
+    if (!posting["Job Posting Information"]["Required Skills:"])
         continue
 
 
     formattedPosting.id = id
     formattedPosting.title = posting["Job Posting Information"]["Job Title:"]
-    companyInfo = posting["Company Info"] ? posting["Company Info"] : posting["Company Information"]
+    let companyInfo = posting["Company Info"] ? posting["Company Info"] : posting["Company Information"]
     formattedPosting.company = companyInfo ? companyInfo["Organization:"] : ""
     formattedPosting.location = posting["Job Posting Information"]["Job - City:"]
     formattedPosting.openings = +posting["Job Posting Information"]["Number of Job Openings:"]
