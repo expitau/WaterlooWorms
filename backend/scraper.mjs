@@ -12,8 +12,8 @@ let currentPage = 1;
 let preparingToExit = false;
 
 (async () => {
-    const browser = await puppeteer.launch({ headless: false, slowMo: 25 });
-    // const browser = await puppeteer.launch();
+    // const browser = await puppeteer.launch({ headless: false, slowMo: 25 });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto('https://waterlooworks.uwaterloo.ca/notLoggedIn.htm');
     async function clickButton(text, type = 'a') {
