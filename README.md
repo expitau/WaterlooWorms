@@ -4,7 +4,7 @@
 This application uses scraped data off of Waterloo Works (A job application site) to provide a more user-friendly experience that allows for real-time search, filtering, saving/exporting, and the ability to see job descriptions without navigating to another page (which you think would be a given, but apparently not).
 
 ### Static webpage
-The [statically-hosted webpage](https://expitau-dev.github.io/WaterlooWorms/) is available on GitHub, and uses strictly client-side data and has no authentication. The data available here pulls from `frontend/data/wwdata.json`. 
+The [statically-hosted webpage](https://expitau.com/WaterlooWorms/) is available on GitHub, and uses strictly client-side data and has no authentication. The data available here pulls from `frontend/data/wwdata.json`. 
 
 ### Running locally
 The frontend can also run locally via Docker or any static web server (such as Nginx, VSCode Live Server, etc). Clone the repository, and run `docker compose up frontend` in the root directory. The site will be available at `localhost:8080`.
