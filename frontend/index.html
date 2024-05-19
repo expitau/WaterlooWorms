@@ -19,6 +19,8 @@
 
         gtag('config', 'G-Y3X63ZHX75');
     </script>
+
+    <script defer data-domain="expitau.com" src="https://plausible.expitau.com/js/script.js"></script>
 </head>
 
 <template id="jobPostingTemplate">
@@ -43,7 +45,8 @@
                 <div>{{job.id}}&nbsp-&nbsp</div>
                 <a target="_blank"
                     :href="`https://www.google.com/search?btnI=1&q=${encodeURIComponent(job.company)}`">{{job.company}}&nbsp<svg
-                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 inline">
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="w-4 h-4 inline">
                         <path fill-rule="evenodd"
                             d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
                             clip-rule="evenodd" />
@@ -55,14 +58,15 @@
                 <div>&nbsp-&nbsp</div>
                 <a target="_blank"
                     :href="`https://google.com/maps/search/${encodeURIComponent(job.company + ', ' + job.location)}`">{{job.location}}&nbsp<svg
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 inline">
-                    <path fill-rule="evenodd"
-                        d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
-                        clip-rule="evenodd" />
-                    <path fill-rule="evenodd"
-                        d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
-                        clip-rule="evenodd" />
-                </svg>
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="w-4 h-4 inline">
+                        <path fill-rule="evenodd"
+                            d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                            clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                            clip-rule="evenodd" />
+                    </svg>
                 </a>
             </div>
 
@@ -72,10 +76,12 @@
                     class="whitespace-nowrap bg-zinc-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     In person
                 </div>
-                <div v-else-if="job.remote.includes('Hybrid')" class="whitespace-nowrap bg-orange-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                <div v-else-if="job.remote.includes('Hybrid')"
+                    class="whitespace-nowrap bg-orange-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     Hybrid
                 </div>
-                <div v-else-if="job.remote.includes('Remote')" class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
+                <div v-else-if="job.remote.includes('Remote')"
+                    class="whitespace-nowrap bg-blue-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
                     Remote
                 </div>
                 <div v-else class="whitespace-nowrap bg-red-600 rounded-xl w-fit h-fit px-2 text-sm m-1">
