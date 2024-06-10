@@ -87,6 +87,7 @@ let preparingToExit = false;
         for (let i in links) {
             foundKeys.push(linkIds[i])
             if (!existingKeys.includes(linkIds[i])) {
+                console.log("Saving ", i)
                 await saveLink(links[i])
             }
         }
