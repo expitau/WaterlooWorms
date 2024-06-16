@@ -1,5 +1,5 @@
-### Data last updated for S24 Cycle 2 Posting 1
-**This is a hacky project that went out of scope, don't use it for production purposes**
+### Data last updated for S24 Cycle 2 Posting 2
+**This is a hacky project that went out of scope, I am maintaining this only because it has been well received and actively used. The code is poorly written, don't look at it**
 
 This application uses scraped data off of Waterloo Works (A job application site) to provide a more user-friendly experience that allows for real-time search, filtering, saving/exporting, and the ability to see job descriptions without navigating to another page (which you think would be a given, but apparently not).
 
@@ -20,7 +20,11 @@ echo "WW_USERNAME=myemail@uwaterloo.ca" >> .env
 echo "WW_PASSWORD=mypassword123" >> .env
 echo "{}" >> data/wwdata.raw.json
 
+# Concurrently, in two terminals (Previously used concurrently package, this is a hack)
+npm run start
 npm run scrape
+
+# Then
 npm run clean
 cp data/wwdata.cleaned.json ../frontend/data/wwdata.json
 ```
